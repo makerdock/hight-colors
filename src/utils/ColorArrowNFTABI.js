@@ -1,4 +1,4 @@
-export const ColorArrowNFTABI = [
+export const ColorArrowNftAbi = [
     {
         "inputs": [
             {

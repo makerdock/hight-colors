@@ -1,4 +1,4 @@
-const abi = [
+export const higherArrowNftAbi = [
     {
         "type": "constructor",
         "inputs": [

@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import { ChromePicker, ColorChangeHandler } from 'react-color'
 import { ColorArrowNFTABI } from '~/utils/ColorArrowNFTABI'
 import { OwnedNft } from '~/utils/alchemyResponse'
+import { higherArrowNftAbi } from '~/utils/abi'
 
 declare global {
   interface Window {
@@ -32,8 +33,11 @@ export default function Home() {
   const [contract, setContract] = useState<ethers.Contract | null>(null)
   const [ownedColors, setOwnedColors] = useState<ColorNFT[]>([])
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
+  const [isMinting, setIsMinting] = useState<boolean>(false);
+  // const [mintedColor, setMintedColor] = useState<string | null>(null);
 
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
+  const mintContract = '0xe3375a05F4102932B8470079d279E2b6DB14cA4d'
 
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -44,13 +48,9 @@ export default function Home() {
         const address = await signer.getAddress()
         setAccount(address)
 
-        const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3' // Replace with your deployed contract address
-        const colorArrowNFT = new ethers.Contract(contractAddress, ColorArrowNFTABI, signer)
-        setContract(colorArrowNFT)
-
         fetchOwnedColors(address)
       } catch (error) {
-        console.error('Failed to connect to Ethereum:', error)
+        console.error(error)
       }
     } else {
       console.log('Please install MetaMask!')
@@ -105,20 +105,30 @@ export default function Home() {
     setSelectedColor(color);
   }
 
-  const mintNFT = async () => {
-    if (!contract) {
-      console.log('Contract not initialized')
-      return
+  const mintNFT = async (): Promise<void> => {
+    if (typeof window.ethereum === 'undefined') {
+      return;
     }
 
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = provider.getSigner()
+
+    const contractAddress = '0xe3375a05F4102932B8470079d279E2b6DB14cA4d' // Replace with your deployed contract address
+    const mintContract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer)
+
+    setIsMinting(true);
     try {
-      const transaction = await contract.mint(color)
-      await transaction.wait()
-      console.log('NFT minted successfully!')
+      // const colorWithoutHash = color.slice(1); // Remove the '#' from the color string
+      const transaction = await mintContract.mint(color);
+      await transaction.wait();
+      console.log('NFT minted successfully!');
+      // setMintedColor(color);
     } catch (error) {
-      console.error('Failed to mint NFT:', error)
+      console.error('Failed to mint NFT:', error);
+    } finally {
+      setIsMinting(false);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
