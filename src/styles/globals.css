@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    font-family: 'Helvetica', sans-serif;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+}
+
+#__next {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
