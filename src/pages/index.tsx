@@ -8,62 +8,58 @@ import GradientCanvas from '~/components/Gradient'
 import Gradient from '~/components/Gradient'
 import Nav from '~/components/Nav'
 import OwnedColors from '~/components/OwnedColors'
+import useColorStore from '~/stores/useColorStore'
+import { hasGoodContrast } from '~/utils/hasGoodContrast'
+import { hasGoodGradientContrast } from '~/utils/hasGoodGradientContrast'
 
 const Home: NextPage = () => {
-  const [color, setColor] = useState<string | null>(null)
-  const [gradientColor1, setGradientColor1] = useState<string | null>(null)
-  const [gradientColor2, setGradientColor2] = useState<string | null>(null)
-  const [isGradientMode, setIsGradientMode] = useState(false)
+  const { isBGMode, setIsBGMode, primaryColor, setPrimaryColor, secondaryColor, setSecondaryColor, isGradientMode, setIsGradientMode } = useColorStore()
+  console.log("🚀 ~ isBGMode:", isBGMode)
+
   const [isColorMinterOpen, setIsColorMinterOpen] = useState(false)
+
   const { address } = useAccount();
 
   useEffect(() => {
     if (!address) {
-      setColor(null)
-      setGradientColor1(null)
-      setGradientColor2(null)
+      setPrimaryColor(undefined)
+      setPrimaryColor(undefined)
+      setSecondaryColor(undefined)
       setIsGradientMode(false)
     }
   }, [address])
 
-  const handleColorSelect = (selectedColor: string, isGradient: boolean) => {
+  const handleColorSelect = (selectedColor: string, isGradient: boolean, selectedBgMode: boolean) => {
+    console.log("🚀 ~ handleColorSelect ~ selectedBgMode:", selectedBgMode)
     setIsGradientMode(isGradient);
+
     if (isGradient) {
-      if (!gradientColor1) {
-        setGradientColor1(selectedColor);
-      } else if (!gradientColor2) {
-        setGradientColor2(selectedColor);
+
+      if (!primaryColor) {
+        setPrimaryColor(selectedColor);
+      } else if (!secondaryColor) {
+        setSecondaryColor(selectedColor);
       } else {
-        setGradientColor1(selectedColor);
-        setGradientColor2(null);
+        setPrimaryColor(selectedColor);
+        setSecondaryColor(undefined);
       }
+
     } else {
-      setColor(selectedColor);
-      setGradientColor1(null);
-      setGradientColor2(null);
+      setPrimaryColor(selectedColor);
+      setSecondaryColor(selectedColor);
     }
+
+    setIsBGMode(selectedBgMode)
   }
 
   const handleColorMinterClose = () => {
     setIsColorMinterOpen(false)
     // Reset color selection when ColorMinter is closed
-    setColor(null)
-    setGradientColor1(null)
-    setGradientColor2(null)
+    setPrimaryColor(undefined)
+    setSecondaryColor(undefined)
     setIsGradientMode(false)
   }
 
-  useEffect(() => {
-    const canvas = document.getElementById('canvas');
-    console.log("🚀 ~ useEffect ~ canvas:", canvas)
-    if ((window as any).Gradient) {
-      console.log("🚀 ~ useEffect ~ (window as any).Gradient:", (window as any).Gradient)
-      new (window as any).Gradient({
-        canvas: 'canvas',
-        colors: ['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']
-      });
-    }
-  }, [])
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
@@ -76,9 +72,13 @@ const Home: NextPage = () => {
       <main className="flex-grow flex flex-col lg:flex-row justify-center items-center bg-black px-4 relative">
         <div className="w-full max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg">
           {!!address && <Arrow
-            color={color || '#000000'}
-            gradientColor1={isGradientMode ? gradientColor1 : null}
-            gradientColor2={isGradientMode ? gradientColor2 : null}
+            primaryColor={primaryColor || '#fff'}
+            invertMode={
+              (isGradientMode && primaryColor && secondaryColor) ?
+                !!hasGoodGradientContrast(primaryColor, secondaryColor) :
+                !hasGoodContrast(primaryColor || '#fff')}
+            secondaryColor={secondaryColor}
+            bgMode={isBGMode}
           />}
           {!address && <GradientCanvas colors={['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']} />}
           {!address && <Nav />}

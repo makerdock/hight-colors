@@ -5,22 +5,24 @@ import Toggle from './Toggle';
 import ColorMinter from './ColorMinter';
 import { ethers } from 'ethers';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
-import { ArrowPathIcon } from '@heroicons/react/16/solid';
+import { ArrowPathIcon, PlusIcon } from '@heroicons/react/16/solid';
+import useColorStore from '~/stores/useColorStore';
 
 interface ColorNFT {
     color: string;
 }
 
 interface OwnedColorsProps {
-    onColorSelect: (color: string, isGradient: boolean) => void;
+    onColorSelect: (color: string, isGradient: boolean, isBGMode: boolean) => void;
 }
 
-const OwnedColors: React.FC<OwnedColorsProps> = ({ onColorSelect }) => {
+const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const { address } = useAccount();
     const [ownedColors, setOwnedColors] = useState<ColorNFT[]>([]);
-    const [isGradientMode, setIsGradientMode] = useState(false);
-    const [gradientColor1, setGradientColor1] = useState<string | null>(null);
-    const [gradientColor2, setGradientColor2] = useState<string | null>(null);
+
+    const { isBGMode, setIsBGMode, primaryColor, setPrimaryColor, secondaryColor, setSecondaryColor, isGradientMode, setIsGradientMode } = useColorStore()
+
+
     const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
@@ -62,27 +64,34 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ onColorSelect }) => {
 
     const handleColorBoxClick = (color: string) => {
         if (isGradientMode) {
-            if (!gradientColor1) {
-                setGradientColor1(color);
-                onColorSelect(color, true);
-            } else if (!gradientColor2) {
-                setGradientColor2(color);
-                onColorSelect(color, true);
+            if (!primaryColor) {
+                setPrimaryColor(color);
+            } else if (!secondaryColor) {
+                setSecondaryColor(color);
             } else {
-                setGradientColor1(color);
-                setGradientColor2(null);
-                onColorSelect(color, true);
+                setPrimaryColor(color);
+                setSecondaryColor(undefined);
             }
-        } else {
-            onColorSelect(color, false);
+        }
+        else {
+            setPrimaryColor(color);
         }
     };
 
     const toggleGradientMode = () => {
+
+        if (isGradientMode) {
+            setSecondaryColor(primaryColor)
+        } else {
+            setSecondaryColor(undefined);
+        }
+
         setIsGradientMode(!isGradientMode);
-        setGradientColor1(null);
-        setGradientColor2(null);
-        onColorSelect('', !isGradientMode); // Reset color selection when toggling mode
+
+    };
+
+    const toggleBGMode = () => {
+        setIsBGMode(!isBGMode);
     };
 
     return (
@@ -108,6 +117,12 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ onColorSelect }) => {
                         onClick={() => handleColorBoxClick(color.color)}
                     ></div>
                 ))}
+                <div
+                    className="w-full aspect-square rounded cursor-pointer border-2 border-white/80 border-dashed flex items-center justify-center text-white/80 hover:bg-white/20"
+                    onClick={() => setIsColorMinterOpen(true)}
+                >
+                    <PlusIcon className='h-8 w-8' />
+                </div>
             </div>
             <div className="flex justify-start items-center">
                 <h2 className="text-xl font-semibold text-white mr-2">Make it a Gradient</h2>
@@ -120,15 +135,19 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ onColorSelect }) => {
                     <div className="flex">
                         <div
                             className="w-10 h-10 border border-gray-300 rounded"
-                            style={{ backgroundColor: gradientColor1 || 'transparent' }}
+                            style={{ backgroundColor: primaryColor || 'transparent' }}
                         ></div>
                         <div
                             className="w-10 h-10 border border-gray-300 ml-2 rounded"
-                            style={{ backgroundColor: gradientColor2 || 'transparent' }}
+                            style={{ backgroundColor: secondaryColor || 'transparent' }}
                         ></div>
                     </div>
                 </div>
             )}
+            <div className="flex justify-start items-center">
+                <h2 className="text-xl font-semibold text-white mr-2">Set Background Color</h2>
+                <Toggle isOn={isBGMode} onToggle={toggleBGMode} />
+            </div>
             <button
                 onClick={() => setIsColorMinterOpen(true)}
                 className=" text-white text-xs mt-6"
@@ -137,7 +156,10 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ onColorSelect }) => {
             </button>
             <ColorMinter
                 isOpen={isColorMinterOpen}
-                onClose={() => setIsColorMinterOpen(false)}
+                onClose={() => {
+                    address && fetchOwnedColors(address)
+                    setIsColorMinterOpen(false)
+                }}
                 colorCheckerContract={colorCheckerContract}
             />
         </div>
