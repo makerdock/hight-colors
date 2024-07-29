@@ -1,17 +1,19 @@
+import classNames from 'classnames';
 import React from 'react';
 
 interface ArrowProps {
     color: string;
+    backgroundColor?: string;
     gradientColor1?: string | null;
     gradientColor2?: string | null;
 }
 
-const Arrow: React.FC<ArrowProps> = ({ color, gradientColor1, gradientColor2 }) => {
+const Arrow: React.FC<ArrowProps> = ({ color, gradientColor1, gradientColor2, backgroundColor }) => {
     return (
         <div className="flex justify-center items-center">
-            <div className="bg-white">
+            <div>
                 <svg width="400" height="400" viewBox="0 0 2500 2500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="2500" height="2500" fill="white" />
+                    <rect width="2500" height="2500" fill={backgroundColor || "white"} />
                     <defs>
                         {gradientColor1 && gradientColor2 && (
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -26,7 +28,7 @@ const Arrow: React.FC<ArrowProps> = ({ color, gradientColor1, gradientColor2 }) 
                     />
                 </svg>
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -1,0 +1,126 @@
+.section_top {
+    padding: 50px 0;
+  }
+  
+  .section-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .section-layout-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1080px;
+    padding: 0 24px;
+  }
+  
+  .section-layout {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .gradient-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .gradient-title-area {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .section-title-1 {
+    font-size: 64px;
+    font-weight: 700;
+    text-transform: uppercase;
+    width: 500px;
+    max-width: 80vw;
+  }
+  
+  .section-title-2 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-top: 20px;
+  }
+  
+  @media (min-width: 450px) {
+    .section-title-1 {
+      font-size: 70px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .section-title-1 {
+      font-size: 90px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .section-title-1 {
+      font-size: 100px;
+      width: 600px;
+    }
+  }
+  
+  .text {
+    line-height: 1;
+    margin: var(--gradient-title-margin) 0 0 0;
+    text-transform: none;
+    letter-spacing: 2px;
+    min-height: 200px;
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .text-above {
+    color: var(--font-color);
+    position: relative;
+  }
+  
+  .text-under {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+  }
+  
+  .text-under-blended {
+    color: #3a3a3a;
+    mix-blend-mode: color-burn;
+  }
+  
+  .text-under-overlay {
+    opacity: 0.2;
+    color: #3a3a3a;
+  }
+  
+  .section_background-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transform: skewY(var(--section-skew-Y));
+    transform-origin: calc(var(--section-gap) * 0.8) 0;
+  }
+  
+  #gradient-canvas {
+    width: 100%;
+    height: 100%;
+    --gradientcolorzero: #6ec3f4;
+    --gradientcolorone: #3a3aff;
+    --gradientcolortwo: #ff61ab;
+    --gradientcolorthree: #E63946;
+  }
+  

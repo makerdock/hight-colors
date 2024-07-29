@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 import Arrow from '~/components/Arrow'
 import ColorMinter from '~/components/ColorMinter'
+import GradientCanvas from '~/components/Gradient'
+import Gradient from '~/components/Gradient'
 import Nav from '~/components/Nav'
 import OwnedColors from '~/components/OwnedColors'
 
@@ -51,6 +53,18 @@ const Home: NextPage = () => {
     setIsGradientMode(false)
   }
 
+  useEffect(() => {
+    const canvas = document.getElementById('canvas');
+    console.log("🚀 ~ useEffect ~ canvas:", canvas)
+    if ((window as any).Gradient) {
+      console.log("🚀 ~ useEffect ~ (window as any).Gradient:", (window as any).Gradient)
+      new (window as any).Gradient({
+        canvas: 'canvas',
+        colors: ['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']
+      });
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-black flex flex-col">
       <Head>
@@ -58,17 +72,19 @@ const Home: NextPage = () => {
         <meta name="description" content="Mint your favorite color as an NFT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Nav />
+      {!!address && <Nav />}
       <main className="flex-grow flex flex-col lg:flex-row justify-center items-center bg-black px-4 relative">
         <div className="w-full max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg">
-          <Arrow
+          {!!address && <Arrow
             color={color || '#000000'}
             gradientColor1={isGradientMode ? gradientColor1 : null}
             gradientColor2={isGradientMode ? gradientColor2 : null}
-          />
-          {!address && (
+          />}
+          {!address && <GradientCanvas colors={['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']} />}
+          {!address && <Nav />}
+          {/* {!address && (
             <p className='text-white text-xs mt-4 text-center'>Connect Wallet to Change Color and Mint</p>
-          )}
+          )} */}
         </div>
         {address && (
           <div className="mt-8 lg:mt-0 lg:ml-8 w-full max-w-xs md:max-w-sm lg:w-80">
