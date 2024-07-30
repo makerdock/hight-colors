@@ -17,7 +17,18 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  transpilePackages: ["geist"],
+  transpilePackages: [
+    "geist",
+    'rc-util',
+    '@ant-design',
+    'kitchen-flow-editor',
+    '@ant-design/pro-editor',
+    'zustand',
+    'leva',
+    'antd',
+    'rc-pagination',
+    'rc-picker'
+  ],
 };
 
 export default config;
