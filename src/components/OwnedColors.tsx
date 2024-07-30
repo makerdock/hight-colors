@@ -19,10 +19,7 @@ interface OwnedColorsProps {
 const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const { address } = useAccount();
     const [ownedColors, setOwnedColors] = useState<ColorNFT[]>([]);
-
     const { isBGMode, setIsBGMode, primaryColor, setPrimaryColor, secondaryColor, setSecondaryColor, isGradientMode, setIsGradientMode } = useColorStore()
-
-
     const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
@@ -75,19 +72,17 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         }
         else {
             setPrimaryColor(color);
+            setSecondaryColor(color);
         }
     };
 
     const toggleGradientMode = () => {
-
+        setIsGradientMode(!isGradientMode);
         if (isGradientMode) {
             setSecondaryColor(primaryColor)
         } else {
             setSecondaryColor(undefined);
         }
-
-        setIsGradientMode(!isGradientMode);
-
     };
 
     const toggleBGMode = () => {
@@ -95,7 +90,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     };
 
     return (
-        <div className="bg-gray-900 p-6 rounded-lg h-full flex flex-col">
+        <div className="bg-gray-900 p-6 rounded-lg h-[60vh] flex flex-col">
             <h1 className="text-3xl mb-8 md:text-4xl font-bold text-white lg:mb-4">Higher Colors</h1>
             <div className="flex justify-start items-center">
                 <h2 className="text-xl font-semibold text-white">Your BaseColors</h2>
@@ -107,7 +102,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     <ArrowPathIcon className={`h-5 w-5 ml-3 ${isRefreshing ? 'animate-spin' : ''}`} />
                 </button>
             </div>
-            <div className="grid grid-cols-4 gap-2 my-4 flex-grow overflow-y-auto">
+            <div className="grid grid-cols-4 gap-2 my-2 overflow-y-auto">
                 {ownedColors.map((color, index) => (
                     <div
                         key={index}
@@ -124,7 +119,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     <PlusIcon className='h-8 w-8' />
                 </div>
             </div>
-            <div className="flex justify-start items-center">
+            <div className="flex justify-start items-center mt-4">
                 <h2 className="text-xl font-semibold text-white mr-2">Make it a Gradient</h2>
                 <Toggle isOn={isGradientMode} onToggle={toggleGradientMode} />
             </div>
@@ -144,16 +139,16 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     </div>
                 </div>
             )}
-            <div className="flex justify-start items-center">
-                <h2 className="text-xl font-semibold text-white mr-2">Set Background Color</h2>
+            <div className="flex justify-start items-center mt-4">
+                <h2 className="text-xl font-semibold text-white mr-2 ">Set Background Color</h2>
                 <Toggle isOn={isBGMode} onToggle={toggleBGMode} />
             </div>
-            <button
+            {/* <button
                 onClick={() => setIsColorMinterOpen(true)}
                 className=" text-white text-xs mt-6"
             >
                 Need more? Mint a New Color
-            </button>
+            </button> */}
             <ColorMinter
                 isOpen={isColorMinterOpen}
                 onClose={() => {

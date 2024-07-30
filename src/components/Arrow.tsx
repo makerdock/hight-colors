@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface ArrowProps {
     // backgroundColor?: string;
@@ -13,6 +13,7 @@ const Arrow: React.FC<ArrowProps> = ({ primaryColor, secondaryColor, bgMode, inv
     secondaryColor = secondaryColor || primaryColor
     console.log("🚀 ~ primaryColor, secondaryColor, bgMode:", primaryColor, secondaryColor, bgMode)
     const fallbackColor = invertMode ? 'black' : 'white'
+
     return (
         <div className="flex justify-center items-center">
             <div>
@@ -23,11 +24,22 @@ const Arrow: React.FC<ArrowProps> = ({ primaryColor, secondaryColor, bgMode, inv
                             <stop offset="0%" stopColor={primaryColor} />
                             <stop offset="100%" stopColor={secondaryColor} />
                         </linearGradient>
+                        <filter id="shadow" x="-5%" y="-5%" width="140%" height="140%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="50" />
+                            <feOffset dx="0" dy="10" result="offsetblur" />
+                            <feFlood floodColor="rgba(0,0,0,0.5)" />
+                            <feComposite in2="offsetblur" operator="in" />
+                            <feMerge>
+                                <feMergeNode />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
                     <path
                         d="M1248 651L688 1210L855.5 1375.5L1129.5 1100.5L1129.68 1850H1372.5V1100.5L1648 1375.5L1812 1210L1253 651H1248Z"
                         className='transition duration-300'
                         fill={!bgMode ? "url(#gradient)" : fallbackColor}
+                        filter="url(#shadow)"
                     />
                 </svg>
             </div>
