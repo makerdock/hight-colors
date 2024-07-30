@@ -5,7 +5,7 @@ export function hasGoodContrast(hexColor: string) {
     const b = parseInt(hexColor.slice(5, 7), 16);
 
     // Calculate relative luminance
-    const luminance = (c) => {
+    const luminance = (c: number) => {
         const cNormalized = c / 255.0;
         return cNormalized <= 0.03928
             ? cNormalized / 12.92

@@ -81,7 +81,7 @@ export const higherArrowNftAbi = [
     },
     {
         "type": "function",
-        "name": "getTokenColor",
+        "name": "getTokenProperties",
         "inputs": [
             {
                 "name": "tokenId",
@@ -92,8 +92,30 @@ export const higherArrowNftAbi = [
         "outputs": [
             {
                 "name": "",
-                "type": "string",
-                "internalType": "string"
+                "type": "tuple",
+                "internalType": "struct ColorArrowNFT.ArrowProperties",
+                "components": [
+                    {
+                        "name": "primaryColor",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "secondaryColor",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "bgMode",
+                        "type": "bool",
+                        "internalType": "bool"
+                    },
+                    {
+                        "name": "invertMode",
+                        "type": "bool",
+                        "internalType": "bool"
+                    }
+                ]
             }
         ],
         "stateMutability": "view"
@@ -146,9 +168,24 @@ export const higherArrowNftAbi = [
         "name": "mint",
         "inputs": [
             {
-                "name": "hexCode",
+                "name": "primaryColor",
                 "type": "string",
                 "internalType": "string"
+            },
+            {
+                "name": "secondaryColor",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "bgMode",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "invertMode",
+                "type": "bool",
+                "internalType": "bool"
             }
         ],
         "outputs": [
@@ -226,7 +263,6 @@ export const higherArrowNftAbi = [
                 "type": "address",
                 "internalType": "address"
             },
-
             {
                 "name": "tokenId",
                 "type": "uint256",
@@ -310,25 +346,6 @@ export const higherArrowNftAbi = [
                 "name": "",
                 "type": "string",
                 "internalType": "string"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "tokenExists",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "bool",
-                "internalType": "bool"
             }
         ],
         "stateMutability": "view"
@@ -440,11 +457,51 @@ export const higherArrowNftAbi = [
     },
     {
         "type": "event",
+        "name": "ArrowMinted",
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "uint256",
+                "indexed": true,
+                "internalType": "uint256"
+            },
+            {
+                "name": "properties",
+                "type": "tuple",
+                "indexed": false,
+                "internalType": "struct ColorArrowNFT.ArrowProperties",
+                "components": [
+                    {
+                        "name": "primaryColor",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "secondaryColor",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "bgMode",
+                        "type": "bool",
+                        "internalType": "bool"
+                    },
+                    {
+                        "name": "invertMode",
+                        "type": "bool",
+                        "internalType": "bool"
+                    }
+                ]
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
         "name": "BatchMetadataUpdate",
         "inputs": [
             {
                 "name": "_fromTokenId",
-
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
@@ -454,25 +511,6 @@ export const higherArrowNftAbi = [
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
-            }
-        ],
-        "anonymous": false
-    },
-    {
-        "type": "event",
-        "name": "ColorMinted",
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "uint256",
-                "indexed": true,
-                "internalType": "uint256"
-            },
-            {
-                "name": "hexCode",
-                "type": "string",
-                "indexed": false,
-                "internalType": "string"
             }
         ],
         "anonymous": false
