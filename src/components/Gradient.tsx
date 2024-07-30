@@ -8,7 +8,7 @@ interface GradientProps {
 
 const GradientCanvas: React.FC<GradientProps> = ({ colors }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const scriptLoaded = useScript('http://localhost:3000/gradient.js');
+    const scriptLoaded = useScript('https://hight-colors.vercel.app/gradient.js');
 
     useEffect(() => {
         console.log("🚀 ~ useEffect ~ scriptLoaded:", scriptLoaded)
