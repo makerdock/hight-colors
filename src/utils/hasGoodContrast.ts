@@ -16,7 +16,6 @@ export function hasGoodContrast(hexColor: string) {
 
     // Calculate contrast ratio (white has luminance of 1)
     const contrastRatio = l > 1 ? (l + 0.05) / (1 + 0.05) : (1 + 0.05) / (l + 0.05);
-    console.log("🚀 ~ hasGoodContrast ~ contrastRatio:", contrastRatio)
 
     // WCAG 2.0 level AA requires a contrast ratio of at least 4.5:1
     return contrastRatio >= 1.2;

@@ -18,14 +18,12 @@ export default async function handler(
     const options = { method: 'GET', headers: { accept: 'application/json' } };
     const url = `https://base-mainnet.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner?owner=${ownerAddress}&contractAddresses[]=${contractAddress}&withMetadata=true&pageSize=100`;
 
-    console.log("🚀 ~ url:", url)
     try {
         const response = await fetch(url, options);
         const data: AlchemyResponse = await response.json();
         const nfts = data.ownedNfts.map((nft) => ({
             color: nft.raw.metadata.name
         }));
-        console.log("🚀 ~ nfts ~ nfts:", nfts)
         res.status(200).json(nfts);
     } catch (error) {
         console.error('Error fetching owned NFTs:', error);

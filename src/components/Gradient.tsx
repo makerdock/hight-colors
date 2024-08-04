@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import useScript from './useScript';
+import useScript from '../utils/useScript';
 import classNames from 'classnames';
 
 interface GradientProps {
@@ -11,7 +11,6 @@ const GradientCanvas: React.FC<GradientProps> = ({ colors }) => {
     const scriptLoaded = useScript('https://hight-colors.vercel.app/gradient.js');
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ scriptLoaded:", scriptLoaded)
         if (scriptLoaded && (window as any).Gradient) {
             const canvas = canvasRef.current;
             if (canvas) {

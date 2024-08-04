@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
-import Toggle from './Toggle';
-import ColorMinter from './ColorMinter';
-import { ethers } from 'ethers';
-import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import { ArrowPathIcon, PlusIcon, XMarkIcon } from '@heroicons/react/16/solid';
-import useColorStore from '~/stores/useColorStore';
-import AnimatedButton from './AnimatedButton';
 import classNames from 'classnames';
+import { ethers } from 'ethers';
+import React, { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
+import useColorStore from '~/stores/useColorStore';
 import { higherArrowNftAbi } from '~/utils/abi';
-import { ColorPicker, Space } from 'antd';
+import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
+import ColorMinter from './ColorMinter';
+import Toggle from './Toggle';
 
 interface ColorNFT {
     color: string;
@@ -30,7 +28,8 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
     const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isFetching, setIsFetching] = useState<boolean>(true)
+    // const [isRefreshing, setIsRefreshing] = useState(false);
     const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
     // const [activeTab, setActiveTab] = useState<'arrow' | 'background'>('arrow');
     // const [isInvert, setIsInvert] = useState(false)
@@ -52,6 +51,15 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         }
     }, [address]);
 
+    useEffect(() => {
+        if (!primaryColor && !isFetching) {
+            if (ownedColors.length > 0) {
+                setPrimaryColor(ownedColors[0]?.color);
+            }
+        }
+
+    }, [ownedColors, isFetching])
+
     const handleRefresh = () => {
         if (address) {
             fetchOwnedColors(address);
@@ -59,7 +67,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     };
 
     const fetchOwnedColors = async (ownerAddress: string) => {
-        setIsRefreshing(true);
+        setIsFetching(true);
         try {
             const response = await fetch(`/api/getColors?ownerAddress=${ownerAddress}`);
             if (!response.ok) {
@@ -70,7 +78,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         } catch (error) {
             console.error('Error fetching owned NFTs:', error);
         } finally {
-            setIsRefreshing(false);
+            setIsFetching(false);
         }
     };
 
@@ -84,6 +92,11 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     }, [isGradientDisabled, isGradientMode]);
 
     const handleColorBoxClick = (color: string) => {
+        // if (primaryColor === color && !isGradientMode) {
+        //     setPrimaryColor(undefined);
+        //     setSecondaryColor(undefined);
+        //     return;
+        // }
         if (isGradientMode) {
             if (!primaryColor) {
                 setPrimaryColor(color);
@@ -255,9 +268,9 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 <button
                     onClick={handleRefresh}
                     className="text-gray-400 hover:text-gray-800 transition-colors"
-                    disabled={isRefreshing}
+                    disabled={isFetching}
                 >
-                    <ArrowPathIcon className={`h-5 w-5 ml-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
                 </button>
             </div>
             {renderColorPickers()}

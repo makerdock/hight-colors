@@ -11,7 +11,6 @@ import useColorStore from '~/stores/useColorStore'
 const Home: NextPage = () => {
   const { isBGMode, setIsBGMode, primaryColor, setPrimaryColor, secondaryColor, setSecondaryColor,
     isGradientMode, setIsGradientMode, invertMode, setInvertMode } = useColorStore()
-  console.log("🚀 ~ isBGMode:", isBGMode)
 
   const [isColorMinterOpen, setIsColorMinterOpen] = useState(false)
 
@@ -27,7 +26,6 @@ const Home: NextPage = () => {
   }, [address])
 
   const handleColorSelect = (selectedColor: string, isGradient: boolean, selectedBgMode: boolean, selectedInvertMode: boolean) => {
-    console.log("🚀 ~ handleColorSelect ~ selectedBgMode:", selectedBgMode)
     setIsGradientMode(isGradient);
 
     if (isGradient) {
@@ -72,10 +70,11 @@ const Home: NextPage = () => {
           {!address && <GradientCanvas colors={['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']} />}
           {!address && <Nav />}
         </div>
-        {!!address && <div className='bg-white md:flex items-stretch rounded-lg overflow-hidden shadow-lg w-full'>
+        {!!address && <div className='bg-white md:flex items-stretch rounded-2xl border border-gray-200 overflow-hidden shadow-lg w-full'>
           <div className="w-full h-full flex place-content-center aspect-square">
             {!!address && <Arrow
-              primaryColor={primaryColor || '#fff'}
+
+              primaryColor={primaryColor}
               invertMode={invertMode}
               secondaryColor={secondaryColor}
               bgMode={isBGMode}

@@ -64,12 +64,9 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
         setIsMinting(true);
         try {
             const hexColor = typeof color === 'string' ? color : color?.toHexString();
-            console.log(hexColor)
             const colorWithoutHash = hexColor?.slice(1);
 
             const value = await mintContract.mintPrice();
-
-            console.log("🚀 ~ mintColor ~ color, colorWithoutHash, address:", color, colorWithoutHash, address)
 
             const transaction = await mintContract.mint(hexColor, colorWithoutHash, address, {
                 value: value
