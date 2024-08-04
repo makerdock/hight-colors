@@ -27,7 +27,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         isBGMode,
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
-    const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
     const [isFetching, setIsFetching] = useState<boolean>(true)
     // const [isRefreshing, setIsRefreshing] = useState(false);
     const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
@@ -132,9 +131,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         setIsBGMode(!isBGMode)
     };
 
-    const toggleColorMinter = () => {
-        setIsColorMinterOpen(!isColorMinterOpen);
-    };
 
     const mintArrow = async (): Promise<void> => {
         if (typeof window.ethereum === 'undefined') {
@@ -173,13 +169,13 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
 
     const renderColorPickers = () => (
         <>
-            <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 my-2 py-1">
+            <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1">
                 {ownedColors.map((nft, index) => (
                     <div
                         key={index}
                         className={classNames(
                             "w-full aspect-square rounded cursor-pointer",
-                            [primaryColor, secondaryColor].includes(nft.color) && "ring-2 ring-black/40 ring-offset-2"
+                            [primaryColor, secondaryColor].includes(nft.color) && "ring-2 ring-black/20 ring-offset-2"
 
                         )}
                         style={{ backgroundColor: nft.color }}
@@ -187,52 +183,41 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                         onClick={() => handleColorBoxClick(nft.color)}
                     ></div>
                 ))}
+
+                {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div className='animate-pulse bg-gray-200 aspect-square rounded' />)}
+
+                {!isFetching && <div
+                    className="w-full col-span-4 row-span-1 col-start-1 flex-1 "
+                >
+                    <ColorMinter colorCheckerContract={colorCheckerContract} />
+
+                </div>}
             </div>
-            <div
-                className="w-full flex-1 p-1 rounded cursor-pointer border-2 border-black/40 border-dashed flex items-center justify-center text-black/40 hover:bg-white/80 mb-4"
-                onClick={() => setIsColorMinterOpen(true)}
-            >
-                {isColorMinterOpen ? (
-                    <div className='flex items-center justify-between space-x-2 w-full'>
-                        <ColorMinter colorCheckerContract={colorCheckerContract} />
-                        <button
-                            onClick={e => {
-                                e.stopPropagation()
-                                setIsColorMinterOpen(false)
-                            }}
-                            className=' hover:bg-gray-200 flex-shrink rounded-full transition-colors'
-                        >
-                            <XMarkIcon className='h-4 w-4  text-gray-400' /> {/* Increased size for better visibility */}
-                        </button>
+
+            {ownedColors.length > 1 && <>
+                <div>
+                    <div className="flex justify-start items-center mt-4">
+                        <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Gradient</h2>
+                        <Toggle isOn={isGradientMode} onToggle={toggleGradientMode} disabled={isGradientDisabled} />
                     </div>
-                ) : (
-                    <PlusIcon className='h-8 w-8' />
-                )}
-            </div>
-            {/* <div className='text-red-500'>This is a error</div> */}
-            <div>
-                {/* <div className="flex justify-start items-start mt-4 space-x-2"> */}
-                <div className="flex justify-start items-center mt-4">
-                    <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Gradient</h2>
-                    <Toggle isOn={isGradientMode} onToggle={toggleGradientMode} disabled={isGradientDisabled} />
+                    {isGradientMode && !isGradientDisabled && <p className="text-gray-400 transition-all duration-300 ease-in-out text-xs">Click on two colors above to make a gradient</p>}
+                    {isGradientDisabled && (
+                        <p className="text-red-500 text-xs mt-1">Get more colors to try gradient</p>
+                    )}
                 </div>
-                {isGradientMode && !isGradientDisabled && <p className="text-gray-400 transition-all duration-300 ease-in-out text-xs">Click on two colors above to make a gradient</p>}
-                {isGradientDisabled && (
-                    <p className="text-red-500 text-xs mt-1">Get more colors to try gradient</p>
-                )}
-            </div>
-            {isGradientMode && <div
-                style={{
-                    background: secondaryColor
-                        ? `linear-gradient(to right, ${primaryColor || '#ffffff'}, ${secondaryColor})`
-                        : primaryColor || '#ffffff',
-                }}
-                className={classNames(
-                    'h-1 mt-1 rounded-xl transition-all duration-300 ease-in-out',
-                    isGradientMode ? 'opacity-100 max-w-full' : 'opacity-0 max-w-0',
-                    (primaryColor && secondaryColor) ? 'w-full' : 'w-0'
-                )}
-            />}
+                {isGradientMode && <div
+                    style={{
+                        background: secondaryColor
+                            ? `linear-gradient(to right, ${primaryColor || '#ffffff'}, ${secondaryColor})`
+                            : primaryColor || '#ffffff',
+                    }}
+                    className={classNames(
+                        'h-1 mt-1 rounded-xl transition-all duration-300 ease-in-out',
+                        isGradientMode ? 'opacity-100 max-w-full' : 'opacity-0 max-w-0',
+                        (primaryColor && secondaryColor) ? 'w-full' : 'w-0'
+                    )}
+                />}
+            </>}
 
             <div className="flex justify-start items-center mt-4">
                 <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>

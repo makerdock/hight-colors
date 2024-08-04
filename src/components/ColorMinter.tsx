@@ -1,14 +1,17 @@
 // components/ColorMinter.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChromePicker, ColorChangeHandler } from 'react-color';
 import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/16/solid';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import { ColorPicker, Space } from 'antd';
 import type { ColorPickerProps } from 'antd/es/color-picker';
 import classNames from 'classnames';
+import { PiSpinnerGapLight } from "react-icons/pi";
+import { motion } from 'framer-motion';
+import { useOnClickOutside } from 'usehooks-ts'
 
 interface ColorMinterProps {
     colorCheckerContract: ethers.Contract | null;
@@ -21,6 +24,20 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
     const [isMinting, setIsMinting] = useState(false);
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
     const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
+    const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
+    const wrapperRef = useRef(null);
+    const antPopperRef = useRef<HTMLElement | null>(null);
+
+    useOnClickOutside([wrapperRef, antPopperRef], () => {
+        if (!isMinting) {
+            setIsColorMinterOpen(false)
+        }
+    })
+
+    useEffect(() => {
+        antPopperRef.current = document.querySelector('.ant-popover') || null;
+    })
+
 
     const { address } = useAccount();
 
@@ -93,46 +110,73 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
     };
 
     return (
-        <div className="flex items-start space-y-4 justify-center w-full relative">
+        <>
+            <div
+                onClick={() => {
+                    if (!isColorMinterOpen) {
+                        setIsColorMinterOpen(true);
+                    }
+                }}
+                ref={wrapperRef}
+                className='rounded cursor-pointer ring-2 ring-black/20 ring-dashed ring-offset-2 flex items-center justify-center text-black/40 hover:bg-white/80'>
 
+                <style jsx global>{`
+                .custom-color-picker .ant-color-picker-trigger {
+                display: none;  // Hide the dropdown trigger
+                }
+                .custom-color-picker.ant-color-picker-trigger {
+                border: none !important;
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                justify-content: start;
+                align-items: center;
+                background: #f2f2f2 !important;
+                }
+                .custom-color-picker.ant-color-picker-trigger:hover {
+                background: #d6ddf8 !important;
+                }
+                .custom-color-picker .ant-color-picker-color-block {
+                max-width: 100%;  // Prevent overflow
+                max-height: 100%;
+                }
+            `}</style>
 
+                {isColorMinterOpen ? (
+                    <div className="flex justify-center items-center flex-1 w-full">
+                        <ColorPicker value={color} onChange={handleColorChange} showText disabledAlpha={true}
+                            format="hex" className="custom-color-picker flex-1 justify-start" />
+                        <button
+                            onClick={isColorAvailable ? mintColor : undefined}
+                            disabled={!isColorAvailable}
+                            className={classNames(
+                                `px-4 rounded-full h-full transition-colors font-medium duration-200 flex items-center`,
+                                isColorAvailable && !isMinting
+                                    ? 'bg-white text-black'
+                                    : 'bg-white text-gray-400 cursor-not-allowed'
 
-            <style jsx global>{`
-  .custom-color-picker .ant-color-picker-trigger {
-    display: none;  // Hide the dropdown trigger
-  }
-  .custom-color-picker .ant-color-picker-color-block {
-    max-width: 100%;  // Prevent overflow
-    max-height: 100%;
-  }
-`}</style>
-            <div className="flex items-center space-x-2 justify-cente align-middle flex-1 w-full">
-                <ColorPicker value={color} onChange={handleColorChange} showText disabledAlpha={true}
-                    format="hex" className="custom-color-picker flex-1 justify-start" />
-                <button
-                    onClick={isColorAvailable ? mintColor : undefined}
-                    disabled={isMinting || !isColorAvailable}
-                    className={classNames(
-                        `px-4 rounded-full transition-colors font-medium duration-200`,
-                        isColorAvailable && !isMinting
-                            ? 'bg-white text-black hover:bg-black hover:text-white border border-black'
-                            : 'bg-gray-200 text-gray-600 cursor-not-allowed'
-
-                    )}
-                >
-                    {isMinting ? 'Minting...' :
-                        transactionHash ? (
-                            <a href={etherscanLink!} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                                View on Basescan
-                            </a>
-                        ) :
-                            'Mint'}
-                </button>
+                            )}
+                        >
+                            {isMinting && <PiSpinnerGapLight className='h-6 w-6 mx-1 text-black animate-spin' />}
+                            {!isMinting && <span>Mint</span>}
+                            {/* {isMinting ? 'Minting...' :
+            transactionHash ? (
+                <a href={etherscanLink!} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                    View on Basescan
+                </a>
+            ) :
+                'Mint'} */}
+                        </button>
+                    </div>
+                ) : (
+                    <PlusIcon className='h-8 w-8' />
+                )}
             </div>
             {errorMessage && (
-                <div className="text-red-500 !mt-2 text-sm absolute top-full left-0 w-full">{errorMessage}</div>
+                <motion.div animate={{
+                    height: errorMessage.length ? 'auto' : 0,
+                }} className="text-red-500 !mt-2 text-sm ">{errorMessage}</motion.div>
             )}
-        </div>
+        </>
     );
 };
 
