@@ -8,6 +8,7 @@ import { higherArrowNftAbi } from '~/utils/abi';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import ColorMinter from './ColorMinter';
 import Toggle from './Toggle';
+import ShineBorder from './magicui/shine-border';
 
 interface ColorNFT {
     color: string;
@@ -249,7 +250,12 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             )} */}
             {/* <h1 className="text-3xl mb-8 md:text-4xl font-bold text-white lg:mb-4">Higher Colors</h1> */}
             <div className="flex justify-start items-center">
-                <h2 className="text-lg font-semibold text-black">BaseColors</h2>
+                <div>
+                    <h2 className="text-lg font-semibold text-black">BaseColors</h2>
+                    <p className='text-xs text-slate-600'>
+                        Mint your own Higher Arrow NFTs with the colors you own
+                    </p>
+                </div>
                 <button
                     onClick={handleRefresh}
                     className="text-gray-400 hover:text-gray-800 transition-colors"
@@ -260,12 +266,19 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             </div>
             {renderColorPickers()}
             <div className='mt-6 w-full'>
-                <button className='px-4 py-2 bg-white text-black font-medium w-full
+                <ShineBorder
+                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg"
+                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                    borderWidth={2}
+                >
+                    Mint
+                </ShineBorder>
+                {/* <button className='px-4 py-2 bg-white text-black font-medium w-full
                 rounded-full hover:bg-black hover:text-white border-black border transition-colors duration-200'
                     onClick={mintArrow}
                     disabled={isMinting}>
                     {isMinting ? 'Minting...' : 'Mint'}
-                </button>
+                </button> */}
             </div>
             {transactionHash && etherscanLink && (
                 <div className="mt-4">

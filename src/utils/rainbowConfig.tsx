@@ -19,6 +19,8 @@ const config = getDefaultConfig({
     chains: [base],
     ssr: true, // If your dApp uses server side rendering (SSR)
 });
+
+
 const queryClient = new QueryClient();
 
 export const RainbowWalletProvider: React.FC<{ children?: ReactNode }> = ({ children }) => <WagmiProvider config={config}>

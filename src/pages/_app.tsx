@@ -5,6 +5,7 @@ import '../styles/fonts.css';
 
 import "~/styles/globals.css";
 import "~/styles/gradient.css";
+import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowWalletProvider } from "~/utils/rainbowConfig";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
