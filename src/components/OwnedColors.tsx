@@ -222,22 +222,24 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={toggleColorMinter}></div>
             )} */}
             {/* <h1 className="text-3xl mb-8 md:text-4xl font-bold text-white lg:mb-4">Higher Colors</h1> */}
-            <div className="mb-1">
-                <div className="flex justify-start  items-center">
-                    <h2 className="text-3xl font-semibold text-black flex-1">BaseColors</h2>
-                    <button
-                        onClick={handleRefresh}
-                        className="text-slate-400 hover:text-slate-800 transition-colors"
-                        disabled={isFetching}
-                    >
-                        <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
-                    </button>
+            <div className="flex-1">
+                <div className="mb-1">
+                    <div className="flex justify-start  items-center">
+                        <h2 className="text-3xl font-semibold text-black flex-1">BaseColors</h2>
+                        <button
+                            onClick={handleRefresh}
+                            className="text-slate-400 hover:text-slate-800 transition-colors"
+                            disabled={isFetching}
+                        >
+                            <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
+                        </button>
+                    </div>
+                    <p className='text-sm text-slate-600'>
+                        Mint your own Higher Arrow NFTs with the colors you own
+                    </p>
                 </div>
-                <p className='text-sm text-slate-600'>
-                    Mint your own Higher Arrow NFTs with the colors you own
-                </p>
+                {renderColorPickers()}
             </div>
-            {renderColorPickers()}
             <div
                 onClick={mintArrow}
                 className='mt-6 w-full'
@@ -251,20 +253,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     {/* <span>Mint</span> */}
                 </ShineBorder>
                 {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
-                {/* <button className='px-4 py-2 bg-white text-black font-medium w-full
-                rounded-full hover:bg-black hover:text-white border-black border transition-colors duration-200'
-                    onClick={mintArrow}
-                    disabled={isMinting}>
-                    {isMinting ? 'Minting...' : 'Mint'}
-                </button> */}
             </div>
-            {/* {transactionHash && etherscanLink && (
-                <div className="mt-4">
-                    <a href={etherscanLink} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
-                        View on Basescan
-                    </a>
-                </div>
-            )} */}
         </div>
     );
 };
