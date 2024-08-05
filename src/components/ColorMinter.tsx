@@ -7,10 +7,9 @@ import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { PiSpinnerGapLight } from "react-icons/pi";
-import { useDebounceCallback, useOnClickOutside } from 'usehooks-ts';
+import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from 'wagmi';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
-import { Description } from '@radix-ui/react-toast';
 import { useToast } from './ui/use-toast';
 
 interface ColorMinterProps {
