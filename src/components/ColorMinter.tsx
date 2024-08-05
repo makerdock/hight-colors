@@ -7,9 +7,11 @@ import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { PiSpinnerGapLight } from "react-icons/pi";
-import { useOnClickOutside } from 'usehooks-ts';
+import { useDebounceCallback, useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from 'wagmi';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
+import { Description } from '@radix-ui/react-toast';
+import { useToast } from './ui/use-toast';
 
 interface ColorMinterProps {
     colorCheckerContract: ethers.Contract | null;
@@ -19,13 +21,15 @@ interface ColorMinterProps {
 const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose }) => {
     const [color, setColor] = useState<ColorPickerProps['value']>('#1677ff');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [isColorAvailable, setIsColorAvailable] = useState(false);
+    const [isColorAvailable, setIsColorAvailable] = useState(true);
     const [isMinting, setIsMinting] = useState(false);
     // const [transactionHash, setTransactionHash] = useState<string | null>(null);
     // const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
     const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
     const wrapperRef = useRef(null);
     const antPopperRef = useRef<HTMLElement | null>(null);
+    const { toast } = useToast()
+
 
     useOnClickOutside(wrapperRef, () => {
         // const isColorSelectorOpen = !!document.querySelector('.ant-popover');
@@ -45,7 +49,10 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
 
     const { address } = useAccount();
 
-    const handleColorChange: ColorPickerProps['onChange'] = async (value, hex) => {
+    const handleColorChange: ColorPickerProps['onChange'] = async (value) => {
+        // console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ value:", )
+        const hex = value.toHexString()
+
         setColor(value);
         setErrorMessage(null);
         setIsColorAvailable(true);
@@ -55,19 +62,24 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
                 throw new Error("No contract");
             }
 
-            console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ tokenId:", 1)
-            const { tokenId } = await colorCheckerContract.getColorData(hex);
-            console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ tokenId:", tokenId)
-
-            if (!tokenId.isZero()) {
-                const owner = await colorCheckerContract.ownerOf(tokenId);
-                setIsColorAvailable(false);
-
-                // const ensData = await fetch(`https://api.ensdata.net/${owner}`).then(a => a.json())
-                setErrorMessage(`Owned by ${owner.slice(0, 6)}...${owner.slice(-4)}`);
+            let data
+            try {
+                data = await colorCheckerContract.getColorData(hex)
+            } catch (error) {
+                return;
             }
+
+            const tokenId = data?.tokenId
+            // console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ tokenId:", value, tokenId)
+
+            const owner = await colorCheckerContract.ownerOf(tokenId);
+            console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ owner:", owner)
+
+            setIsColorAvailable(false);
+            setErrorMessage(`Owned by ${owner.slice(0, 6)}...${owner.slice(-4)}`);
         } catch (error) {
-            console.error('Error checking color availability:', (error as any).message);
+            console.error(error)
+            // console.error('Error checking color availability:', (error as any).message);
             setIsColorAvailable(true);
         }
     };
@@ -111,7 +123,11 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
             // setEtherscanLink(etherscanLink);
         } catch (error) {
             console.error('Failed to mint NFT:', (error as any).message);
-            setErrorMessage('Failed to mint NFT. Try again.');
+            toast({
+                variant: "destructive",
+                title: 'Something went wrong.',
+                description: 'Could not mint NFT, please try again later.'
+            });
         } finally {
             setIsMinting(false);
         }
@@ -126,7 +142,10 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
                     }
                 }}
                 ref={wrapperRef}
-                className='rounded cursor-pointer ring-2 ring-black/20 ring-dashed ring-offset-2 flex items-center justify-center text-black/40 hover:bg-white/80'>
+                className={classNames(
+                    'rounded cursor-pointer ring-2 ring-dashed ring-offset-2 flex items-center justify-center text-black/40 hover:bg-white/80',
+                    !isColorAvailable ? 'ring-red-500' : 'ring-black/20',
+                )}>
 
                 <style jsx global>{`
                 .custom-color-picker .ant-color-picker-trigger {
@@ -166,13 +185,6 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
                         >
                             {isMinting && <PiSpinnerGapLight className='h-6 w-6 mx-1 text-black animate-spin' />}
                             {!isMinting && <span>Mint</span>}
-                            {/* {isMinting ? 'Minting...' :
-            transactionHash ? (
-                <a href={etherscanLink!} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                    View on Basescan
-                </a>
-            ) :
-                'Mint'} */}
                         </button>
                     </div>
                 ) : (

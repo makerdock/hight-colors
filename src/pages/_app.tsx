@@ -7,13 +7,14 @@ import "~/styles/globals.css";
 import "~/styles/gradient.css";
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowWalletProvider } from "~/utils/rainbowConfig";
+import { Toaster } from "~/components/ui/toaster";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <RainbowWalletProvider>
       <div>
-        {/* <Script src="http://localhost:3001/gradient.js" /> */}
         <Component {...pageProps} />
+        <Toaster />
       </div>
     </RainbowWalletProvider>
   );

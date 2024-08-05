@@ -93,7 +93,7 @@ const Home: NextPage = () => {
           )}
         >
           <motion.div
-            onClick={() => setSidebarMode(sidebarMode === 'mint' ? 'loading' : 'mint')}
+            // onClick={() => setSidebarMode(sidebarMode === 'mint' ? 'success' : 'mint')}
             style={{
               backgroundColor: isBGMode ? primaryColor : invertMode ? 'black' : 'white',
             }}
@@ -125,7 +125,6 @@ const Home: NextPage = () => {
                   key="mint"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
-                  exit={{ opacity: '0%' }}
                 >
                   <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
@@ -135,7 +134,6 @@ const Home: NextPage = () => {
                   key="loading"
                   initial={{ opacity: '0%', }}
                   animate={{ opacity: "100%", }}
-                  exit={{ opacity: '0%' }}
                   className='w-full h-full max-h-[60vh] overflow-hidden'
                 >
                   <LoadingSidebar />
@@ -147,8 +145,8 @@ const Home: NextPage = () => {
                   key="success"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
-                  exit={{ opacity: '0%' }}
-                  className='w-full h-full'
+                  transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
+                  className='w-full h-full max-h-[60vh] overflow-hidden'
                 >
                   <SuccessSidebar />
                 </motion.div>

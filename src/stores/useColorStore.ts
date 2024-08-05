@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { create } from 'zustand'
+import { toast, useToast } from '~/components/ui/use-toast'
 import { higherArrowNftAbi } from '~/utils/abi'
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
 
@@ -107,7 +108,14 @@ export const useColorStore = create<ColorState>((set, get) => ({
             // setEtherscanLink(etherscanLink);
         } catch (error) {
             console.error(error);
-            set({ mintError: 'Failed to mint NFT. Try again.', sidebarMode: "mint" });
+            set({ sidebarMode: "mint" });
+
+            toast({
+                variant: "destructive",
+                title: 'Something went wrong.',
+                description: 'Could not mint NFT, please try again later.'
+            });
+
         } finally {
             set({ sidebarMode: "mint" });
         }
@@ -150,7 +158,12 @@ export const useColorStore = create<ColorState>((set, get) => ({
             set({ mintError: undefined, sidebarMode: "success" });
         } catch (error) {
             console.error('Failed to mint NFT:', error);
-            set({ mintError: 'Failed to mint NFT. Try again.', sidebarMode: "mint" });
+            set({ sidebarMode: "mint" });
+            toast({
+                variant: "destructive",
+                title: 'Something went wrong.',
+                description: 'Could not mint NFT, please try again later.'
+            });
         }
     }
 }))
