@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 import { cn } from "~/lib/utils";
 
 interface BlurIntProps {
-  word: string;
   className?: string;
   variant?: {
     hidden: { filter: string; opacity: number };
     visible: { filter: string; opacity: number };
   };
   duration?: number;
+  children: React.ReactNode;
 }
-const BlurIn = ({ word, className, variant, duration = 1 }: BlurIntProps) => {
+const BlurIn = ({ children, className, variant, duration = 1 }: BlurIntProps) => {
   const defaultVariants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
@@ -28,10 +28,10 @@ const BlurIn = ({ word, className, variant, duration = 1 }: BlurIntProps) => {
       variants={combinedVariants}
       className={cn(
         className,
-        "font-display text-2xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-3 xl md:leading-[2rem]",
+        "font-display text-2xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-3xl md:leading-[2rem]",
       )}
     >
-      {word}
+      {children}
     </motion.h1>
   );
 };

@@ -157,14 +157,18 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                         initial={{ height: 0 }}
                         animate={{ height: 'auto' }}
                         exit={{ height: 0 }}
-                        className="w-full col-span-4 row-span-1 col-start-1 flex-1 overflow-hidden p-1"
+                        className="w-full col-span-full row-span-1 col-start-1 flex-1 overflow-hidden p-1"
                     >
-                        <ColorMinter colorCheckerContract={colorCheckerContract} />
+                        <ColorMinter
+                            onClose={() => {
+                                address && fetchOwnedColors(address)
+                            }}
+                            colorCheckerContract={colorCheckerContract} />
                     </motion.div>}
                 </AnimatePresence>
             </div>
 
-            {ownedColors.length > 1 && <>
+            {/* {ownedColors.length > 1 && <>
                 <div>
                     <div className="flex justify-start items-center mt-4">
                         <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Gradient</h2>
@@ -187,7 +191,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                         (primaryColor && secondaryColor) ? 'w-full' : 'w-0'
                     )}
                 />}
-            </>}
+            </>} */}
 
             <div className="flex justify-start items-center mt-4">
                 <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>
@@ -213,7 +217,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
 
     return (
 
-        <div className="p-4 md:p-8 bg-white min-h-[60vh] flex flex-col w-full">
+        <div className="p-4 md:p-8 bg-white md:min-h-[60vh] min-h-max flex flex-col w-full">
             {/* {isColorMinterOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={toggleColorMinter}></div>
             )} */}

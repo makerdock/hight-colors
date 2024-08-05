@@ -13,15 +13,16 @@ import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 
 interface ColorMinterProps {
     colorCheckerContract: ethers.Contract | null;
+    onClose: () => void;
 }
 
-const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
+const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose }) => {
     const [color, setColor] = useState<ColorPickerProps['value']>('#1677ff');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isColorAvailable, setIsColorAvailable] = useState(false);
     const [isMinting, setIsMinting] = useState(false);
-    const [transactionHash, setTransactionHash] = useState<string | null>(null);
-    const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
+    // const [transactionHash, setTransactionHash] = useState<string | null>(null);
+    // const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
     const [isColorMinterOpen, setIsColorMinterOpen] = useState(false);
     const wrapperRef = useRef(null);
     const antPopperRef = useRef<HTMLElement | null>(null);
@@ -54,7 +55,9 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
                 throw new Error("No contract");
             }
 
+            console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ tokenId:", 1)
             const { tokenId } = await colorCheckerContract.getColorData(hex);
+            console.log("🚀 ~ consthandleColorChange:ColorPickerProps['onChange']= ~ tokenId:", tokenId)
 
             if (!tokenId.isZero()) {
                 const owner = await colorCheckerContract.ownerOf(tokenId);
@@ -64,7 +67,7 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
                 setErrorMessage(`Owned by ${owner.slice(0, 6)}...${owner.slice(-4)}`);
             }
         } catch (error) {
-            console.error('Error checking color availability:', error);
+            console.error('Error checking color availability:', (error as any).message);
             setIsColorAvailable(true);
         }
     };
@@ -102,10 +105,12 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
             const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
             console.log('Basescan Link:', etherscanLink);
 
-            setTransactionHash(transactionHash);
-            setEtherscanLink(etherscanLink);
+            onClose()
+
+            // setTransactionHash(transactionHash);
+            // setEtherscanLink(etherscanLink);
         } catch (error) {
-            console.error('Failed to mint NFT:', error);
+            console.error('Failed to mint NFT:', (error as any).message);
             setErrorMessage('Failed to mint NFT. Try again.');
         } finally {
             setIsMinting(false);
