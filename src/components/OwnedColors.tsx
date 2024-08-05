@@ -9,6 +9,8 @@ import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import ColorMinter from './ColorMinter';
 import Toggle from './Toggle';
 import ShineBorder from './magicui/shine-border';
+import { PiSpinnerGapLight } from 'react-icons/pi';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface ColorNFT {
     color: string;
@@ -25,7 +27,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         primaryColor, setPrimaryColor,
         secondaryColor, setSecondaryColor,
         isGradientMode, setIsGradientMode,
-        isBGMode,
+        isBGMode, mintArrow, mintError,
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
     const [isFetching, setIsFetching] = useState<boolean>(true)
@@ -33,10 +35,9 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
     // const [activeTab, setActiveTab] = useState<'arrow' | 'background'>('arrow');
     // const [isInvert, setIsInvert] = useState(false)
-    const [isMinting, setIsMinting] = useState(false);
-    const [transactionHash, setTransactionHash] = useState<string | null>(null);
-    const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    // const [isMinting, setIsMinting] = useState(false);
+    // const [transactionHash, setTransactionHash] = useState<string | null>(null);
+    // const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
 
     useEffect(() => {
         if (address) {
@@ -132,42 +133,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         setIsBGMode(!isBGMode)
     };
 
-
-    const mintArrow = async (): Promise<void> => {
-        if (typeof window.ethereum === 'undefined') {
-            return;
-        }
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-
-        const contractAddress = '0x773b41E13B9c5C306f1639928E2b544589238A9F';
-        const mintContract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
-
-        setIsMinting(true);
-        try {
-            const transaction = await mintContract.mint(primaryColor, secondaryColor, isBGMode, invertMode);
-
-            console.log('Transaction sent. Waiting for confirmation...');
-            const receipt = await transaction.wait();
-
-            const transactionHash = receipt.transactionHash;
-            console.log('NFT minted successfully!');
-            console.log('Transaction Hash:', transactionHash);
-
-            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
-            console.log('Basescan Link:', etherscanLink);
-
-            setTransactionHash(transactionHash);
-            setEtherscanLink(etherscanLink);
-        } catch (error) {
-            console.error('Failed to mint NFT:', error);
-            setErrorMessage('Failed to mint NFT. Please try again.');
-        } finally {
-            setIsMinting(false);
-        }
-    };
-
     const renderColorPickers = () => (
         <>
             <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1">
@@ -185,14 +150,18 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     ></div>
                 ))}
 
-                {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div className='animate-pulse bg-gray-200 aspect-square rounded' />)}
+                {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div key={index} className='animate-pulse bg-slate-200 aspect-square rounded' />)}
 
-                {!isFetching && <div
-                    className="w-full col-span-4 row-span-1 col-start-1 flex-1 "
-                >
-                    <ColorMinter colorCheckerContract={colorCheckerContract} />
-
-                </div>}
+                <AnimatePresence>
+                    {!isFetching && <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: 'auto' }}
+                        exit={{ height: 0 }}
+                        className="w-full col-span-4 row-span-1 col-start-1 flex-1 overflow-hidden p-1"
+                    >
+                        <ColorMinter colorCheckerContract={colorCheckerContract} />
+                    </motion.div>}
+                </AnimatePresence>
             </div>
 
             {ownedColors.length > 1 && <>
@@ -201,7 +170,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                         <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Gradient</h2>
                         <Toggle isOn={isGradientMode} onToggle={toggleGradientMode} disabled={isGradientDisabled} />
                     </div>
-                    {isGradientMode && !isGradientDisabled && <p className="text-gray-400 transition-all duration-300 ease-in-out text-xs">Click on two colors above to make a gradient</p>}
+                    {isGradientMode && !isGradientDisabled && <p className="text-slate-400 transition-all duration-300 ease-in-out text-xs">Click on two colors above to make a gradient</p>}
                     {isGradientDisabled && (
                         <p className="text-red-500 text-xs mt-1">Get more colors to try gradient</p>
                     )}
@@ -229,7 +198,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     <div
                         key={index}
                         className={classNames(
-                            "w-full rounded cursor-pointer border border-gray-300",
+                            "w-full rounded cursor-pointer border border-slate-300",
                             (!invertMode && color === '#ffffff' || !!invertMode && color === '#000000') && "ring-2 ring-black/40 ring-offset-2"
 
                         )}
@@ -249,30 +218,35 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={toggleColorMinter}></div>
             )} */}
             {/* <h1 className="text-3xl mb-8 md:text-4xl font-bold text-white lg:mb-4">Higher Colors</h1> */}
-            <div className="flex justify-start items-center">
-                <div>
-                    <h2 className="text-lg font-semibold text-black">BaseColors</h2>
-                    <p className='text-xs text-slate-600'>
-                        Mint your own Higher Arrow NFTs with the colors you own
-                    </p>
+            <div className="mb-1">
+                <div className="flex justify-start  items-center">
+                    <h2 className="text-3xl font-semibold text-black flex-1">BaseColors</h2>
+                    <button
+                        onClick={handleRefresh}
+                        className="text-slate-400 hover:text-slate-800 transition-colors"
+                        disabled={isFetching}
+                    >
+                        <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
+                    </button>
                 </div>
-                <button
-                    onClick={handleRefresh}
-                    className="text-gray-400 hover:text-gray-800 transition-colors"
-                    disabled={isFetching}
-                >
-                    <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
-                </button>
+                <p className='text-sm text-slate-600'>
+                    Mint your own Higher Arrow NFTs with the colors you own
+                </p>
             </div>
             {renderColorPickers()}
-            <div className='mt-6 w-full'>
+            <div
+                onClick={mintArrow}
+                className='mt-6 w-full'
+            >
                 <ShineBorder
-                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg"
+                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
                     color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
                     borderWidth={2}
                 >
-                    Mint
+                    <span>Mint</span>
+                    {/* <span>Mint</span> */}
                 </ShineBorder>
+                {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
                 {/* <button className='px-4 py-2 bg-white text-black font-medium w-full
                 rounded-full hover:bg-black hover:text-white border-black border transition-colors duration-200'
                     onClick={mintArrow}
@@ -280,13 +254,13 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     {isMinting ? 'Minting...' : 'Mint'}
                 </button> */}
             </div>
-            {transactionHash && etherscanLink && (
+            {/* {transactionHash && etherscanLink && (
                 <div className="mt-4">
                     <a href={etherscanLink} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
                         View on Basescan
                     </a>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

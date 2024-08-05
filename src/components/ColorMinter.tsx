@@ -1,17 +1,15 @@
 // components/ColorMinter.tsx
-import React, { useEffect, useRef, useState } from 'react';
-import { ChromePicker, ColorChangeHandler } from 'react-color';
-import { ethers } from 'ethers';
-import { useAccount } from 'wagmi';
-import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { PlusIcon, XMarkIcon } from '@heroicons/react/16/solid';
-import { ColorPicker, Space } from 'antd';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { ColorPicker } from 'antd';
 import type { ColorPickerProps } from 'antd/es/color-picker';
 import classNames from 'classnames';
-import { PiSpinnerGapLight } from "react-icons/pi";
+import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
-import { useOnClickOutside } from 'usehooks-ts'
+import React, { useEffect, useRef, useState } from 'react';
+import { PiSpinnerGapLight } from "react-icons/pi";
+import { useOnClickOutside } from 'usehooks-ts';
+import { useAccount } from 'wagmi';
+import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 
 interface ColorMinterProps {
     colorCheckerContract: ethers.Contract | null;
@@ -28,9 +26,14 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
     const wrapperRef = useRef(null);
     const antPopperRef = useRef<HTMLElement | null>(null);
 
-    useOnClickOutside([wrapperRef, antPopperRef], () => {
+    useOnClickOutside(wrapperRef, () => {
+        // const isColorSelectorOpen = !!document.querySelector('.ant-popover');
+        const isColorSelectorClosed = !!document.querySelector('.ant-popover-hidden');
+
         if (!isMinting) {
-            setIsColorMinterOpen(false)
+            if (!!isColorSelectorClosed) {
+                setIsColorMinterOpen(false)
+            }
         }
     })
 
@@ -80,7 +83,7 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract }) => {
 
         setIsMinting(true);
         try {
-            const hexColor = typeof color === 'string' ? color : color?.toHexString();
+            const hexColor = typeof color === 'string' ? color : (color as any)?.toHexString();
             const colorWithoutHash = hexColor?.slice(1);
 
             const value = await mintContract.mintPrice();

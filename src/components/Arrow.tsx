@@ -11,7 +11,8 @@ interface ArrowProps {
 
 const Arrow: React.FC<ArrowProps> = ({ primaryColor, secondaryColor, bgMode, invertMode }) => {
     secondaryColor = secondaryColor || primaryColor
-    const fallbackColor = invertMode ? 'black' : 'white'
+    // const fallbackColor = invertMode ? 'black' : 'white'
+    const fallbackColor = 'transparent'
 
     return (
         <motion.svg
@@ -19,8 +20,9 @@ const Arrow: React.FC<ArrowProps> = ({ primaryColor, secondaryColor, bgMode, inv
             initial={{ y: "100%" }}
             transition={{ ease: "easeInOut", duration: .3 }}
             className={classNames(
-                "h-full w-full transform transition duration-300",
-            )} viewBox="0 0 2500 2500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                "h-full w-full",
+            )} viewBox="0 0 2500 2500" fill="none" xmlns="http://www.w3.org/2000/svg"
+        >
             <rect className='transition duration-300' width="2500" height="2500" fill={bgMode ? 'url(#gradient)' : fallbackColor} />
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">

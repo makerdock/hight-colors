@@ -18,7 +18,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, onToggle, disabled = false }) => 
                     disabled={disabled}
                 />
                 <div
-                    className={`w-10 h-6 rounded-full shadow-inner transition-colors duration-300 ease-in-out ${isOn ? 'bg-black' : 'bg-gray-400'
+                    className={`w-10 h-6 rounded-full shadow-inner transition-colors duration-300 ease-in-out ${isOn ? 'bg-black' : 'bg-slate-400'
                         } ${disabled ? 'opacity-50' : ''}`}
                 >
                     <div
