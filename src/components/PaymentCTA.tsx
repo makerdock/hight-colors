@@ -23,12 +23,117 @@ import { createWalletClient, custom } from "viem"
 
 export function PaymentCta() {
     const {
-        mintError, mintArrowWithHigher,
+        mintError,
         primaryColor, isBGMode, invertMode,
-        setSidebarMode
+        setSidebarMode,
+        fetchOwnedArrows
     } = useColorStore();
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
+
+    const mintArrowWithHigher = async () => {
+        if (typeof window.ethereum === 'undefined') {
+            return;
+        }
+
+        const currChainId = account.chainId;
+        if (currChainId !== base.id) {
+            // await switchChain(wagmiCoreConfig, { chainId: base.id });
+
+            const walletClient = createWalletClient({
+                chain: base,
+                transport: custom(window.ethereum!),
+            })
+
+            await walletClient.switchChain({ id: base.id })
+        }
+
+        // const contractAddress = ;
+
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
+        const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
+
+        const nftContract = new ethers.Contract(nftContractAddress, higherArrowNftAbi, signer);
+
+        const higherTokenContract = new ethers.Contract(higherTokenAddress, [
+            'function approve(address spender, uint256 amount) public returns (bool)',
+            'function allowance(address owner, address spender) public view returns (uint256)'
+        ], signer);
+
+        // set({ sidebarMode: "loading" });
+        setSidebarMode("loading");
+        try {
+            // Check current allowance
+            // const userAddress = await signer.getAddress();
+            const currentAllowance = await higherTokenContract.allowance(account.address, nftContractAddress);
+            const requiredAmount = ethers.utils.parseUnits("100", 18); // Assuming 18 decimals for Higher token
+
+            // If current allowance is less than required, approve the NFT contract to spend Higher tokens
+            if (currentAllowance.lt(requiredAmount)) {
+                console.log('Approving Higher token spend...');
+                const approvalTx = await higherTokenContract.approve(nftContractAddress, requiredAmount);
+                await approvalTx.wait();
+                console.log('Approval successful');
+            }
+
+            console.log('Minting NFT with Higher token...');
+            const transaction = await nftContract.mintWithHigher(primaryColor, isBGMode, invertMode);
+
+            console.log('Transaction sent. Waiting for confirmation...');
+            const receipt = await transaction.wait();
+
+            const transactionHash = receipt.transactionHash;
+            console.log("🚀 ~ mintArrow: ~ receipt:", receipt)
+            console.log('NFT minted successfully!');
+            console.log('Transaction Hash:', transactionHash);
+
+            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
+            console.log('Basescan Link:', etherscanLink);
+
+            // Find the Transfer event in the logs
+            const transferLog = receipt.logs.find((log: any) => {
+                try {
+                    const parsedLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(log);
+                    return parsedLog.name === 'Transfer' && parsedLog.args.from === ethers.constants.AddressZero;
+                } catch {
+                    return false;
+                }
+            });
+
+            if (!transferLog) {
+                throw new Error('No mint Transfer event found in the transaction');
+            }
+
+            // Parse the Transfer event to get the contract address and token ID
+            const parsedTransferLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(transferLog);
+            const tokenId = parsedTransferLog.args.tokenId;
+            console.log("🚀 ~ mintArrow: ~ tokenId:", tokenId)
+
+            // Get the token URI
+            const tokenURI = await nftContract.tokenURI(tokenId);
+            console.log("🚀 ~ mintArrow: ~ tokenURI:", tokenURI)
+
+            // fetch the json from the uri
+            const tokenData = await fetch(tokenURI).then(a => a.json());
+            console.log("🚀 ~ mintArrow: ~ tokenData:", tokenData)
+
+            await fetchOwnedArrows(account.address as any);
+            setSidebarMode("success");
+        } catch (error) {
+            console.error(error);
+            setSidebarMode("mint");
+
+            toast({
+                variant: "destructive",
+                title: 'Something went wrong.',
+                description: 'Could not mint NFT, please try again later.'
+            });
+        }
+    }
 
 
     const mintArrow = async () => {
@@ -42,11 +147,6 @@ export function PaymentCta() {
             })
 
             await walletClient.switchChain({ id: base.id })
-            toast({
-                variant: "destructive",
-                title: 'Please switch to Base Mainnet to mint NFTs.'
-            });
-            return;
         }
 
         const contractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
@@ -65,16 +165,18 @@ export function PaymentCta() {
             console.log("🚀 ~ mintArrow ~ hash:", hash)
 
             if (hash) {
-                const receipt = await waitForTransactionReceipt(wagmiCoreConfig, { hash });
-                console.log('NFT minted successfully!');
-                console.log('Transaction Hash:', receipt.transactionHash);
-
-                const etherscanLink = `https://basescan.org/tx/${receipt.transactionHash}`;
-                console.log('Basescan Link:', etherscanLink);
-
-                // set({ sidebarMode: "success" });
-                setSidebarMode("success");
+                throw new Error('Transaction failed');
             }
+
+            const receipt = await waitForTransactionReceipt(wagmiCoreConfig, { hash });
+            console.log('NFT minted successfully!');
+            console.log('Transaction Hash:', receipt.transactionHash);
+
+            const etherscanLink = `https://basescan.org/tx/${receipt.transactionHash}`;
+            console.log('Basescan Link:', etherscanLink);
+
+            await fetchOwnedArrows(account.address as any);
+            setSidebarMode("success");
         } catch (error) {
             console.error(error);
             // set({ sidebarMode: "mint" });
@@ -87,9 +189,10 @@ export function PaymentCta() {
             });
         }
     }
+
+
     return (
         <>
-
             <DropdownMenu>
                 <DropdownMenuTrigger className="hover:outline-none focus:outline-none">
                     <ShineBorder

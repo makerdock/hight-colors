@@ -222,7 +222,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     return (
 
         <div className="p-4 md:p-8 bg-white md:min-h-[60vh] min-h-max flex flex-col w-full">
-            <div className="flex-1">
+            <div className="flex-1 mb-6">
                 <div className="mb-1">
                     <div className="flex justify-start  items-center">
                         <h2 className="text-3xl font-semibold text-black flex-1">BaseColors</h2>

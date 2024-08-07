@@ -20,6 +20,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASECOLOR_CONTRACT_ADDRESS: z.string(),
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS: z.string(),
+    NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS: z.string(),
   },
 
   /**
@@ -31,6 +32,7 @@ export const env = createEnv({
     ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
     NEXT_PUBLIC_BASECOLOR_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_BASECOLOR_CONTRACT_ADDRESS,
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
+    NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

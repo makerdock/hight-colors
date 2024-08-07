@@ -90,7 +90,7 @@ const Home: NextPage = () => {
             style={{
               backgroundColor: isBGMode ? primaryColor : invertMode ? 'black' : 'white',
             }}
-            animate className="w-full h-full flex place-content-center aspect-square max-h-[60vh] relative">
+            animate className="w-full h-full flex place-content-center aspect-square max-h-[80vh] relative">
             {!!address && <Arrow
               primaryColor={primaryColor}
               invertMode={invertMode}
@@ -103,7 +103,6 @@ const Home: NextPage = () => {
           </motion.div>
 
           <motion.div
-            key="modal"
             initial={{ x: '100%' }}
             animate={{ x: "0%", }}
             transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
