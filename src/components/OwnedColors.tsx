@@ -11,6 +11,7 @@ import Toggle from './Toggle';
 import ShineBorder from './magicui/shine-border';
 import { PiSpinnerGapLight } from 'react-icons/pi';
 import { AnimatePresence, motion } from 'framer-motion';
+import { env } from '~/env';
 
 interface ColorNFT {
     color: string;
@@ -70,7 +71,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const fetchOwnedColors = async (ownerAddress: string) => {
         setIsFetching(true);
         try {
-            const response = await fetch(`/api/getColors?ownerAddress=${ownerAddress}`);
+            const response = await fetch(`/api/getColors?ownerAddress=${ownerAddress}&contractAddress=${env.NEXT_PUBLIC_BASECOLOR_CONTRACT_ADDRESS}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch NFTs');
             }

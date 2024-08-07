@@ -3,13 +3,13 @@ import { env } from '~/env'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 
 const apiKey = env.ALCHEMY_API_KEY
-const contractAddress = process.env.CONTRACT_ADDRESS
+// const contractAddress = env.NEXT_PUBLIC_BASECOLOR_CONTRACT_ADDRESS
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { ownerAddress } = req.query
+    const { ownerAddress, contractAddress } = req.query
 
     if (!ownerAddress || typeof ownerAddress !== 'string') {
         return res.status(400).json({ error: 'Owner address is required' })

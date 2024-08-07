@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import classNames from 'classnames'
 import { AnimatePresence, motion } from "framer-motion"
 import type { NextPage } from 'next'
@@ -6,19 +5,13 @@ import Head from 'next/head'
 import { useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import Arrow from '~/components/Arrow'
+import GetUserNFTs from '~/components/GetUserNFTs'
 import GradientCanvas from '~/components/Gradient'
-import FarcasterIcon from '~/components/icons/FarcasterIcon'
-import BlurIn from '~/components/magicui/blur-in'
-import Particles from '~/components/magicui/particles'
+import LoadingSidebar from '~/components/LoadingSidebar'
 import Nav from '~/components/Nav'
 import OwnedColors from '~/components/OwnedColors'
-import { Button } from '~/components/ui/button'
-import useColorStore from '~/stores/useColorStore'
-import { FaXTwitter } from "react-icons/fa6";
-import { MdCopyAll } from "react-icons/md";
-import { MdOutlineFileDownload } from "react-icons/md";
 import SuccessSidebar from '~/components/SuccessSidebar'
-import LoadingSidebar from '~/components/LoadingSidebar'
+import useColorStore from '~/stores/useColorStore'
 
 const Home: NextPage = () => {
   const { isBGMode, setIsBGMode, primaryColor, setPrimaryColor, secondaryColor, setSecondaryColor,
@@ -154,6 +147,7 @@ const Home: NextPage = () => {
             </AnimatePresence>
           </motion.div>
         </div>}
+        <GetUserNFTs />
       </main>
     </div>
   )
