@@ -9,8 +9,11 @@ import {
     QueryClientProvider,
     QueryClient,
 } from "@tanstack/react-query";
-import { http, createConfig } from '@wagmi/core'
-import { base } from '@wagmi/core/chains'
+// import { http, createConfig } from '@wagmi/core'
+// import { base } from '@wagmi/chains'
+
+import { http, createConfig } from 'wagmi'
+import { base } from 'wagmi/chains'
 
 
 export const wagmiConfig = getDefaultConfig({
@@ -33,7 +36,7 @@ export const wagmiCoreConfig = createConfig({
 
 const queryClient = new QueryClient();
 
-export const RainbowWalletProvider: React.FC<{ children?: ReactNode }> = ({ children }) => <WagmiProvider config={wagmiConfig}>
+export const RainbowWalletProvider: React.FC<{ children?: ReactNode }> = ({ children }) => <WagmiProvider config={wagmiCoreConfig}>
     <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
             {children}
