@@ -164,7 +164,7 @@ export function PaymentCta() {
             const hash = await writeContractAsync(request)
             console.log("🚀 ~ mintArrow ~ hash:", hash)
 
-            if (hash) {
+            if (!hash) {
                 throw new Error('Transaction failed');
             }
 
