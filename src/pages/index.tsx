@@ -20,9 +20,7 @@ const Home: NextPage = () => {
   } = useColorStore()
   console.log("🚀 ~ sidebarMode:", sidebarMode)
   // const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
-
   // const [isColorMinterOpen, setIsColorMinterOpen] = useState(false)
-
   const { address } = useAccount();
 
   useEffect(() => {
