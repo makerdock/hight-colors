@@ -16,7 +16,7 @@ export default async function handler(
     }
 
     const options = { method: 'GET', headers: { accept: 'application/json', redirect: 'follow' }, };
-    const url = `https://api.ensdata.net/${address}`;
+    const url = `https://api.ensdata.net/${address.toString()}`;
 
     try {
         const response = await fetch(url, options);

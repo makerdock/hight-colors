@@ -16,7 +16,7 @@ export default async function handler(
     }
 
     const options = { method: 'GET', headers: { accept: 'application/json' } };
-    const url = `https://base-${chain}.g.alchemy.com/nft/v3/${apiKey}/getNFTsForOwner?owner=${ownerAddress}&contractAddresses[]=${contractAddress}&withMetadata=true&pageSize=100`;
+    const url = `https://base-${chain.toString()}.g.alchemy.com/nft/v3/${apiKey.toString()}/getNFTsForOwner?owner=${ownerAddress.toString()}&contractAddresses[]=${contractAddress?.toString()}&withMetadata=true&pageSize=100`;
 
     try {
         const response = await fetch(url, options);

@@ -28,7 +28,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         primaryColor, setPrimaryColor,
         secondaryColor, setSecondaryColor,
         isGradientMode, setIsGradientMode,
-        isBGMode, mintArrow, mintError, mintArrowWithHigher,
+        isBGMode,
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
     const [isFetching, setIsFetching] = useState<boolean>(true)

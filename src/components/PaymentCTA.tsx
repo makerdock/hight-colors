@@ -42,7 +42,7 @@ export function PaymentCta() {
 
             const walletClient = createWalletClient({
                 chain: base,
-                transport: custom(window.ethereum!),
+                transport: custom(window.ethereum),
             })
 
             await walletClient.switchChain({ id: base.id })
@@ -143,7 +143,7 @@ export function PaymentCta() {
 
             const walletClient = createWalletClient({
                 chain: base,
-                transport: custom(window.ethereum!),
+                transport: custom(window.ethereum),
             })
 
             await walletClient.switchChain({ id: base.id })
