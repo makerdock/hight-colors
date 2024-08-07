@@ -1,5 +1,4 @@
-import { chains, createSession, currencies } from '@paywithglide/glide-js'
-import { ethers } from 'ethers'
+import { ethers, providers } from 'ethers'
 import { base } from 'viem/chains'
 import { create } from 'zustand'
 import { toast } from '~/components/ui/use-toast'
@@ -7,7 +6,6 @@ import { env } from '~/env'
 import { higherArrowNftAbi } from '~/utils/abi'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
-import { glide } from '~/utils/glide'
 
 interface ColorState {
     primaryColor: string | undefined
@@ -213,10 +211,28 @@ export const useColorStore = create<ColorState>((set, get) => ({
         //     blockExplorerUrls: ['https://sepolia.basescan.org'],
         // };
         // Request network change
+
+        // check the current chain
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log("🚀 ~ mintArrow: ~ provider:", provider)
+        const chainIdBigInt = (await provider.getNetwork()).chainId; //returns BigInt => 1337n for hardhat
+        console.log("🚀 ~ mintArrow: ~ chainIdBigInt:", chainIdBigInt)
+        const chainId = Number(chainIdBigInt) // convert to interger;
+
+        // returns a bigint
+        // const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        console.log("🚀 ~ mintArrow: ~ chainId:", chainId)
+
+        console.log("🚀 ~ mintArrow: ~ base.id:", ethers.utils.hexlify(base.id))
+
+        if (chainId === base.id) {
+            console.log('Already on Base Sepolia network');
+        }
+
         try {
             await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: base.id }],
+                params: [base],
             });
         } catch (switchError) {
             // This error code indicates that the chain has not been added to MetaMask.
@@ -224,7 +240,7 @@ export const useColorStore = create<ColorState>((set, get) => ({
                 try {
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
-                        params: [base.id],
+                        params: [base],
                     });
                 } catch (addError) {
                     console.error('Failed to add Base Sepolia network', addError);
@@ -239,7 +255,7 @@ export const useColorStore = create<ColorState>((set, get) => ({
 
         const { primaryColor, secondaryColor, isBGMode, invertMode } = get();
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
         const contractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
@@ -247,7 +263,7 @@ export const useColorStore = create<ColorState>((set, get) => ({
 
         set({ sidebarMode: "loading" });
         try {
-            const transaction = await mintContract.mint(primaryColor, primaryColor, isBGMode, invertMode);
+            const transaction = await mintContract.mint(primaryColor, isBGMode, invertMode);
 
             console.log('Transaction sent. Waiting for confirmation...');
             const receipt = await transaction.wait();

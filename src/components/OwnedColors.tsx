@@ -11,6 +11,7 @@ import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import ColorMinter from './ColorMinter';
 import ShineBorder from './magicui/shine-border';
 import Toggle from './Toggle';
+import { PaymentCta } from './PaymentCTA';
 
 interface ColorNFT {
     color: string;
@@ -221,10 +222,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     return (
 
         <div className="p-4 md:p-8 bg-white md:min-h-[60vh] min-h-max flex flex-col w-full">
-            {/* {isColorMinterOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={toggleColorMinter}></div>
-            )} */}
-            {/* <h1 className="text-3xl mb-8 md:text-4xl font-bold text-white lg:mb-4">Higher Colors</h1> */}
             <div className="flex-1">
                 <div className="mb-1">
                     <div className="flex justify-start  items-center">
@@ -243,33 +240,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 </div>
                 {renderColorPickers()}
             </div>
-            <div
-                onClick={mintArrow}
-                className='mt-6 w-full'
-            >
-                <ShineBorder
-                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                    borderWidth={2}
-                >
-                    <span>Mint</span>
-                </ShineBorder>
-
-            </div>
-            <div
-                onClick={mintArrowWithHigher}
-                className='mt-2 w-full'
-            >
-                <ShineBorder
-                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                    borderWidth={2}
-                >
-                    <span>Mint with HIgher</span>
-                </ShineBorder>
-
-            </div>
-            {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
+            <PaymentCta />
         </div>
     );
 };

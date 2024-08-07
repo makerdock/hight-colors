@@ -14,7 +14,7 @@ import {
 } from "@tanstack/react-query";
 
 const config = getDefaultConfig({
-    appName: 'My RainbowKit App',
+    appName: 'YOUR_APP_NAME',
     projectId: 'YOUR_PROJECT_ID',
     chains: [base],
     ssr: true, // If your dApp uses server side rendering (SSR)

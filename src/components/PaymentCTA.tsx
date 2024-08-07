@@ -1,43 +1,44 @@
 "use client"
 
-import * as React from "react"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 
-import { Button } from "./ui/button"
+import useColorStore from "~/stores/useColorStore"
+import ShineBorder from "./magicui/shine-border"
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+    DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import ShineBorder from "./magicui/shine-border"
 
-type Checked = DropdownMenuCheckboxItemProps["checked"]
-
-export function DropdownMenuCheckboxes() {
-    const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
-    const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false)
-    const [showPanel, setShowPanel] = React.useState<Checked>(false)
-
+export function PaymentCta() {
+    const {
+        mintArrow, mintError, mintArrowWithHigher,
+    } = useColorStore();
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger>
-                <ShineBorder
-                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                    borderWidth={2}
-                >
-                    <span>Mint</span>
-                </ShineBorder>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuItem>Pay with Eth (0.004)</DropdownMenuItem>
-                <DropdownMenuItem>Pay with $HIGHER (100)</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+
+            <DropdownMenu>
+                <DropdownMenuTrigger className="hover:outline-none focus:outline-none">
+                    <ShineBorder
+                        className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                        color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                        borderWidth={2}
+                    >
+                        <span>Mint</span>
+                    </ShineBorder>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem
+                        onClick={mintArrow}
+                    >Pay with 0.004 Eth</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={mintArrowWithHigher}
+                    >Pay with 100 $HIGHER</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
+        </>
 
     )
 }
