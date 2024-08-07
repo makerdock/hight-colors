@@ -1,7 +1,9 @@
 import { ethers } from 'ethers'
 import { create } from 'zustand'
-import { toast, useToast } from '~/components/ui/use-toast'
+import { toast } from '~/components/ui/use-toast'
+import { env } from '~/env'
 import { higherArrowNftAbi } from '~/utils/abi'
+import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
 
 interface ColorState {
@@ -23,6 +25,15 @@ interface ColorState {
     mintArrow: () => Promise<void>
     transactionHash?: string
     etherscanLink?: string
+
+    ownedArrows: OwnedNft[]
+    setOwnedArrows: (arrows: OwnedNft[]) => void
+    mintedArrow?: OwnedNft
+    setMintedArrow: (arrow: OwnedNft) => void
+
+    fetchOwnedArrows: (address: string) => Promise<void>
+    isFetchingOwnedArrows: boolean
+    setIsFetchingOwnedArrows: (isFetching: boolean) => void
 }
 
 export const useColorStore = create<ColorState>((set, get) => ({
@@ -42,6 +53,33 @@ export const useColorStore = create<ColorState>((set, get) => ({
     setIsGradientMode: (isGradient) => set({ isGradientMode: isGradient }),
     setIsBGMode: (isBG) => set({ isBGMode: isBG }),
     setInvertMode: (invert) => set({ invertMode: invert }),
+
+    mintedArrow: undefined,
+    setMintedArrow: (arrow) => set({ mintedArrow: arrow }),
+    ownedArrows: [],
+    setOwnedArrows: (arrows) => set({ ownedArrows: arrows }),
+    setIsFetchingOwnedArrows: (isFetching) => set({ isFetchingOwnedArrows: isFetching }),
+    isFetchingOwnedArrows: false,
+    fetchOwnedArrows: async (address: string) => {
+        set({ isFetchingOwnedArrows: true });
+        try {
+            const response = await fetch(`/api/getColors?ownerAddress=${address}&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch NFTs');
+            }
+            const data: AlchemyResponse = await response.json();
+            set({ ownedArrows: data.ownedNfts });
+        } catch (error) {
+            console.error('Error fetching owned NFTs:', error);
+            toast({
+                variant: "destructive",
+                title: 'Error',
+                description: 'Failed to fetch owned NFTs. Please try again later.'
+            });
+        } finally {
+            set({ isFetchingOwnedArrows: false });
+        }
+    },
     mintArrow: async (): Promise<void> => {
         if (typeof window.ethereum === 'undefined') {
             return;
@@ -82,12 +120,11 @@ export const useColorStore = create<ColorState>((set, get) => ({
 
 
         const { primaryColor, secondaryColor, isBGMode, invertMode } = get();
-        console.log("🚀 ~ mintArrow: ~ primaryColor, secondaryColor, isBGMode, invertMode:", primaryColor, secondaryColor, isBGMode, invertMode)
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
-        console.log(1)
-        const contractAddress = '0x515d45F06EdD179565aa2796388417ED65E88939';
+
+        const contractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
         const mintContract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
 
         set({ sidebarMode: "loading" });
@@ -98,12 +135,44 @@ export const useColorStore = create<ColorState>((set, get) => ({
             const receipt = await transaction.wait();
 
             const transactionHash = receipt.transactionHash;
+            console.log("🚀 ~ mintArrow: ~ receipt:", receipt)
             console.log('NFT minted successfully!');
             console.log('Transaction Hash:', transactionHash);
 
             const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
             console.log('Basescan Link:', etherscanLink);
 
+
+            // Find the Transfer event in the logs
+            const transferLog = receipt.logs.find((log: any) => {
+                try {
+                    const parsedLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(log);
+                    return parsedLog.name === 'Transfer' && parsedLog.args.from === ethers.constants.AddressZero;
+                } catch {
+                    return false;
+                }
+            });
+
+            if (!transferLog) {
+                throw new Error('No mint Transfer event found in the transaction');
+            }
+
+            // Parse the Transfer event to get the contract address and token ID
+            const parsedTransferLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(transferLog);
+            const contractAddress = transferLog.address;
+            const tokenId = parsedTransferLog.args.tokenId;
+            console.log("🚀 ~ mintArrow: ~ tokenId:", tokenId)
+
+
+            // Get the token URI
+            const tokenURI = await mintContract.tokenURI(tokenId);
+            console.log("🚀 ~ mintArrow: ~ tokenURI:", tokenURI)
+
+            // fetch the json from the uri
+            const tokenData = await fetch(tokenURI).then(a => a.json());
+            console.log("🚀 ~ mintArrow: ~ tokenData:", tokenData)
+
+            set({ sidebarMode: "success" })
             // setTransactionHash(transactionHash);
             // setEtherscanLink(etherscanLink);
         } catch (error) {
@@ -116,10 +185,10 @@ export const useColorStore = create<ColorState>((set, get) => ({
                 description: 'Could not mint NFT, please try again later.'
             });
 
-        } finally {
-            set({ sidebarMode: "mint" });
         }
     },
+
+
     mintColor: async (color: string, address: string): Promise<void> => {
         if (typeof window.ethereum === 'undefined') {
             return;

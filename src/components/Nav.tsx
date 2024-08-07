@@ -1,9 +1,7 @@
 import {
-    useConnectModal,
     useAccountModal,
-    useChainModal,
+    useConnectModal
 } from "@rainbow-me/rainbowkit";
-import React from "react";
 import { useAccount } from "wagmi";
 
 const Nav = () => {

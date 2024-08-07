@@ -1,17 +1,16 @@
-import { ArrowPathIcon, PlusIcon, XMarkIcon } from '@heroicons/react/16/solid';
+import { ArrowPathIcon } from '@heroicons/react/16/solid';
 import classNames from 'classnames';
 import { ethers } from 'ethers';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
+import { env } from '~/env';
 import useColorStore from '~/stores/useColorStore';
-import { higherArrowNftAbi } from '~/utils/abi';
+import { AlchemyResponse } from '~/utils/alchemyResponse';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import ColorMinter from './ColorMinter';
-import Toggle from './Toggle';
 import ShineBorder from './magicui/shine-border';
-import { PiSpinnerGapLight } from 'react-icons/pi';
-import { AnimatePresence, motion } from 'framer-motion';
-import { env } from '~/env';
+import Toggle from './Toggle';
 
 interface ColorNFT {
     color: string;
@@ -75,7 +74,10 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             if (!response.ok) {
                 throw new Error('Failed to fetch NFTs');
             }
-            const colors = await response.json();
+            const data: AlchemyResponse = await response.json();
+            const colors = data.ownedNfts.map((nft) => ({
+                color: nft.raw.metadata.name
+            }));
             setOwnedColors(colors);
         } catch (error) {
             console.error('Error fetching owned NFTs:', error);
@@ -251,7 +253,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     borderWidth={2}
                 >
                     <span>Mint</span>
-                    {/* <span>Mint</span> */}
                 </ShineBorder>
                 {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
             </div>

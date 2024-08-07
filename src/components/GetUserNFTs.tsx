@@ -1,96 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import { useAccount, } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { useAccount, } from 'wagmi';
 import { env } from '~/env';
+import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse';
 
-const abi = [
-    "function balanceOf(address owner) view returns (uint256)",
-    "function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)",
-    "function tokenURI(uint256 tokenId) view returns (string)"
-];
 
 interface NFTMetadata {
     name: string;
     description: string;
     image: string;
     tokenId: number;
+    metadata: Record<string, string>
 }
 
 const GetUserNFTsWithMetadata = () => {
     const { address, isConnected } = useAccount();
     const { openConnectModal } = useConnectModal();
-    const [nfts, setNfts] = useState<NFTMetadata[]>([]);
+    const [nfts, setNfts] = useState<OwnedNft[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchNFTData = async () => {
-            if (!isConnected) return;
+    const fetchOwnedColors = async () => {
+        setIsLoading(true);
+        try {
+            if (!address) return;
+            const response = await fetch(`/api/getColors?ownerAddress=${address}&chain=sepolia&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}`);
 
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
-
-                const contract = new ethers.Contract(env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS, abi, signer);
-
-                const balance = await contract.balanceOf(address);
-                console.log("🚀 ~ fetchNFTData ~ balance:", balance)
-                const tokenIds = [];
-
-                for (let i = 0; i < balance.toNumber(); i++) {
-                    const tokenId = await contract.tokenOfOwnerByIndex(address, i);
-                    tokenIds.push(tokenId.toNumber());
-                }
-
-                const metadataPromises = tokenIds.map(async (tokenId) => {
-                    const uri = await contract.tokenURI(tokenId);
-                    const response = await fetch(uri);
-                    const metadata = await response.json();
-                    return { tokenId, metadata };
-                });
-
-                const nftsWithMetadata = await Promise.all(metadataPromises);
-                console.log("🚀 ~ fetchNFTData ~ nftsWithMetadata:", nftsWithMetadata)
-                // setNfts(nftsWithMetadata);
-            } catch (err) {
-                setError('Error fetching NFT data: ' + err.message);
-                console.error(err);
-            } finally {
-                setIsLoading(false);
+            if (!response.ok) {
+                throw new Error('Failed to fetch NFTs');
             }
-        };
+            const data: AlchemyResponse = await response.json();
 
-        fetchNFTData();
+            setNfts(data.ownedNfts);
+        } catch (error) {
+            console.error('Error fetching owned NFTs:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchOwnedColors();
     }, [address, isConnected]);
 
-    if (!isConnected) {
-        return (
-            <div>
-                <p>Please connect your wallet to view your NFTs.</p>
-                <button onClick={openConnectModal}>Connect Wallet</button>
-            </div>
-        );
-    }
-
-    if (isLoading) return <div>Loading NFT data...</div>;
-    if (error) return <div>{error}</div>;
+    if (!nfts.length) return null;
 
     return (
-        <div>
-            <ul>
-                {nfts?.map(({ tokenId, metadata }) => (
-                    <li key={tokenId}>
-                        <h3>Token ID: {tokenId}</h3>
-                        <p>Name: {metadata.name}</p>
-                        <p>Description: {metadata.description}</p>
-                        {metadata.image && <img src={metadata.image} alt={metadata.name} style={{ maxWidth: '200px' }} />}
-                    </li>
+        <div className='fixed bottom-0 left-0 pb-4 w-full'>
+
+            {/* <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0'>
+                <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
+                    Recently Minted NFTs
+                </span>
+                <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
+                    Your NFTs
+                </span>
+            </div> */}
+
+            <div className='flex justify-center space-x-2'>
+                {nfts?.map(({ tokenId, image }) => (
+                    <motion.div
+                        key={tokenId}
+                        initial={{ y: 50 }}
+                        animate={{ y: 50 }}
+                        whileHover={{ y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="cursor-pointer relative group"
+                    >
+                        <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            Arrow #{tokenId}
+                        </span>
+                        <img
+                            className="h-24 aspect-square rounded-lg shadow-xl"
+                            src={image.pngUrl}
+                        />
+                    </motion.div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
