@@ -65,7 +65,6 @@ const Home: NextPage = () => {
     setIsGradientMode(false)
   }
 
-
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <Head>
