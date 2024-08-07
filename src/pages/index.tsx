@@ -72,13 +72,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {!!address && <Nav />}
-      <main className="flex-grow flex flex-col lg:flex-row justify-center items-center px-4 relative w-full max-w-4xl mx-auto flex-1">
+      <main className="flex-grow flex flex-col lg:flex-row justify-center items-center px-0 relative w-full max-w-4xl mx-auto flex-1 min-h-[100dvh] md:min-h-full">
         <div>
           {!address && <GradientCanvas colors={['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']} />}
           {!address && <Nav />}
         </div>
         {!!address && <div
-          className={classNames(' md:flex items-stretch rounded-2xl border border-slate-200 overflow-hidden shadow-lg w-full bg-white',
+          className={classNames('md:flex flex-1 md:flex-auto items-stretch rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
           )}
         >
           <motion.div
@@ -86,7 +86,7 @@ const Home: NextPage = () => {
             style={{
               backgroundColor: isBGMode ? primaryColor : invertMode ? 'black' : 'white',
             }}
-            animate className="w-full h-full flex place-content-center aspect-square max-h-[80vh] relative">
+            animate className="w-full h-full flex place-content-center aspect-square max-h-52 md:max-h-[80vh] sticky top-0 pt-12 md:pt-0">
             {!!address && <Arrow
               primaryColor={primaryColor}
               invertMode={invertMode}
@@ -102,7 +102,7 @@ const Home: NextPage = () => {
             animate={{ x: "0%", }}
             transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
             exit={{ x: '100%' }}
-            className="lg:mt-0 border-l-1 bg-white border-black/20 md:min-w-[300px] border-l border-slate-200 md:h-auto h-[30vh] overflow-y-scroll overflow-x-hidden relative"
+            className="lg:mt-0 border-l-1 bg-white border-black/20 md:min-w-[300px] border-l border-slate-200 md:h-auto h-auto overflow-y-scroll overflow-x-hidden relative flex-1"
           >
             <AnimatePresence
               initial={false}
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
                   key="mint"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
-                  className='w-full h-full max-h-[80vh] overflow-hidden'
+                  className='w-full h-full md:max-h-max max-h-[80vh] overflow-hidden'
                 >
                   <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
