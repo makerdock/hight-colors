@@ -47,7 +47,6 @@ const Home: NextPage = () => {
         setPrimaryColor(selectedColor);
         setSecondaryColor(undefined);
       }
-
     } else {
       setPrimaryColor(selectedColor);
       setSecondaryColor(selectedColor);
@@ -98,7 +97,6 @@ const Home: NextPage = () => {
             <p className='text-white text-xs mt-4 text-center'>Connect Wallet to Change Color and Mint</p>
           )} */}
           </motion.div>
-
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: "0%", }}
