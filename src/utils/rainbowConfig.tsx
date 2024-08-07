@@ -2,44 +2,68 @@ import { ReactNode } from 'react';
 
 import {
     getDefaultConfig,
-    RainbowKitProvider,
+    RainbowKitProvider
 } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+
 import {
-    QueryClientProvider,
     QueryClient,
+    QueryClientProvider,
 } from "@tanstack/react-query";
+import { WagmiProvider } from 'wagmi';
 // import { http, createConfig } from '@wagmi/core'
 // import { base } from '@wagmi/chains'
 
-import { http, createConfig } from 'wagmi'
-import { base } from 'wagmi/chains'
+// import { base } from 'wagmi/chains'
+import { base } from '@wagmi/core/chains';
 import { env } from '~/env';
 
+const projectId = env.NEXT_PUBLIC_WALLET_CONNECT_KEY;
+console.log("🚀 ~ projectId:", projectId)
 
-export const wagmiConfig = getDefaultConfig({
-    appName: 'HigherArrows',
-    projectId: env.NEXT_PUBLIC_WALLET_CONNECT_KEY,
+
+// const { wallets } = getDefaultWallets({
+//     appName: 'HigherArrows',
+//     projectId,
+//     chains: [base],
+// });
+
+// export const wagmiConfig = getDefaultConfig({
+//     appName: 'HigherArrows',
+//     projectId,
+//     chains: [base],
+//     ssr: true, // If your dApp uses server side rendering (SSR)
+//     transports: {
+//         [base.id]: http(),
+//     },
+// });
+
+// export const wagmiCoreConfig = createConfig({
+//     chains: [base],
+//     connectors: [
+//         walletConnect({
+//             projectId,
+//         }),
+//     ],
+//     transports: {
+//         [base.id]: http(),
+//     },
+// })
+
+export const wagmiCoreConfig = getDefaultConfig({
+    appName: "HigherColors",
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    projectId,
     chains: [base],
-    ssr: true, // If your dApp uses server side rendering (SSR)
-    transports: {
-        [base.id]: http(),
-    },
+    ssr: true,
 });
 
-export const wagmiCoreConfig = createConfig({
-    chains: [base],
-    transports: {
-        [base.id]: http(),
-    },
-})
 
 
 const queryClient = new QueryClient();
 
 export const RainbowWalletProvider: React.FC<{ children?: ReactNode }> = ({ children }) => <WagmiProvider config={wagmiCoreConfig}>
     <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <RainbowKitProvider initialChain={base}>
             {children}
         </RainbowKitProvider>
     </QueryClientProvider>
