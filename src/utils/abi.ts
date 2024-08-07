@@ -6,9 +6,28 @@ export const higherArrowNftAbi = [
                 "name": "initialOwner",
                 "type": "address",
                 "internalType": "address"
+            },
+            {
+                "name": "_higherToken",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "_ethMintPrice",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "_higherMintPrice",
+                "type": "uint256",
+                "internalType": "uint256"
             }
         ],
         "stateMutability": "nonpayable"
+    },
+    {
+        "type": "receive",
+        "stateMutability": "payable"
     },
     {
         "type": "function",
@@ -62,6 +81,19 @@ export const higherArrowNftAbi = [
     },
     {
         "type": "function",
+        "name": "ethMintPrice",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
         "name": "getApproved",
         "inputs": [
             {
@@ -96,12 +128,7 @@ export const higherArrowNftAbi = [
                 "internalType": "struct ColorArrowNFT.ArrowProperties",
                 "components": [
                     {
-                        "name": "primaryColor",
-                        "type": "string",
-                        "internalType": "string"
-                    },
-                    {
-                        "name": "secondaryColor",
+                        "name": "color",
                         "type": "string",
                         "internalType": "string"
                     },
@@ -116,6 +143,32 @@ export const higherArrowNftAbi = [
                         "internalType": "bool"
                     }
                 ]
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "higherMintPrice",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "higherToken",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "contract IERC20"
             }
         ],
         "stateMutability": "view"
@@ -168,12 +221,65 @@ export const higherArrowNftAbi = [
         "name": "mint",
         "inputs": [
             {
-                "name": "primaryColor",
+                "name": "color",
                 "type": "string",
                 "internalType": "string"
             },
             {
-                "name": "secondaryColor",
+                "name": "bgMode",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "invertMode",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "payable"
+    },
+    {
+        "type": "function",
+        "name": "mintWithEth",
+        "inputs": [
+            {
+                "name": "color",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "bgMode",
+                "type": "bool",
+                "internalType": "bool"
+            },
+            {
+                "name": "invertMode",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "payable"
+    },
+    {
+        "type": "function",
+        "name": "mintWithHigher",
+        "inputs": [
+            {
+                "name": "color",
                 "type": "string",
                 "internalType": "string"
             },
@@ -320,6 +426,29 @@ export const higherArrowNftAbi = [
     },
     {
         "type": "function",
+        "name": "setHigherTokenAndPrices",
+        "inputs": [
+            {
+                "name": "_higherToken",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "_ethMintPrice",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "_higherMintPrice",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
         "name": "supportsInterface",
         "inputs": [
             {
@@ -406,6 +535,20 @@ export const higherArrowNftAbi = [
         "stateMutability": "nonpayable"
     },
     {
+        "type": "function",
+        "name": "withdrawEth",
+        "inputs": [],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "withdrawHigherTokens",
+        "inputs": [],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
         "type": "event",
         "name": "Approval",
         "inputs": [
@@ -472,12 +615,7 @@ export const higherArrowNftAbi = [
                 "internalType": "struct ColorArrowNFT.ArrowProperties",
                 "components": [
                     {
-                        "name": "primaryColor",
-                        "type": "string",
-                        "internalType": "string"
-                    },
-                    {
-                        "name": "secondaryColor",
+                        "name": "color",
                         "type": "string",
                         "internalType": "string"
                     },
@@ -492,6 +630,12 @@ export const higherArrowNftAbi = [
                         "internalType": "bool"
                     }
                 ]
+            },
+            {
+                "name": "paidWithEth",
+                "type": "bool",
+                "indexed": false,
+                "internalType": "bool"
             }
         ],
         "anonymous": false

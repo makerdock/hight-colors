@@ -1,10 +1,13 @@
+import { chains, createSession, currencies } from '@paywithglide/glide-js'
 import { ethers } from 'ethers'
+import { base } from 'viem/chains'
 import { create } from 'zustand'
 import { toast } from '~/components/ui/use-toast'
 import { env } from '~/env'
 import { higherArrowNftAbi } from '~/utils/abi'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
+import { glide } from '~/utils/glide'
 
 interface ColorState {
     primaryColor: string | undefined
@@ -23,6 +26,7 @@ interface ColorState {
     setMintError: (error: string | undefined) => void
     mintColor: (color: string, address: string) => Promise<void>
     mintArrow: () => Promise<void>
+    mintArrowWithHigher: () => Promise<void>
     transactionHash?: string
     etherscanLink?: string
 
@@ -80,6 +84,120 @@ export const useColorStore = create<ColorState>((set, get) => ({
             set({ isFetchingOwnedArrows: false });
         }
     },
+
+    mintArrowWithHigher: async (): Promise<void> => {
+        if (typeof window.ethereum === 'undefined') {
+            return;
+        }
+
+        console.log("🚀 ~ mintArrowWithHigher: ~ base.id:", base)
+        // try {
+        //     await window.ethereum.request({
+        //         method: 'wallet_switchEthereumChain',
+        //         params: [base],
+        //     });
+        // } catch (switchError) {
+        //     console.log("🚀 ~ mintArrowWithHigher: ~ switchError:", switchError)
+        //     if ((switchError as any).code === 4902) {
+        //         try {
+        //             await window.ethereum.request({
+        //                 method: 'wallet_addEthereumChain',
+        //                 params: [base],
+        //             });
+        //         } catch (addError) {
+        //             console.error('Failed to add network', addError);
+        //             return;
+        //         }
+        //     } else {
+        //         console.error('Failed to switch to network', switchError);
+        //         return;
+        //     }
+        // }
+
+        const { primaryColor, isBGMode, invertMode } = get();
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        const nftContractAddress = '0xca7c785c1cfb5748ea3d75cbbb6967133908e2ac';
+        const higherTokenAddress = '0x328827640c6a58AC16A692841ffe5DF185e2be6b';
+
+        const nftContract = new ethers.Contract(nftContractAddress, higherArrowNftAbi, signer);
+
+        const higherTokenContract = new ethers.Contract(higherTokenAddress, [
+            'function approve(address spender, uint256 amount) public returns (bool)',
+            'function allowance(address owner, address spender) public view returns (uint256)'
+        ], signer);
+
+        set({ sidebarMode: "loading" });
+        try {
+            // Check current allowance
+            const userAddress = await signer.getAddress();
+            const currentAllowance = await higherTokenContract.allowance(userAddress, nftContractAddress);
+            const requiredAmount = ethers.utils.parseUnits("100", 18); // Assuming 18 decimals for Higher token
+
+            // If current allowance is less than required, approve the NFT contract to spend Higher tokens
+            if (currentAllowance.lt(requiredAmount)) {
+                console.log('Approving Higher token spend...');
+                const approvalTx = await higherTokenContract.approve(nftContractAddress, requiredAmount);
+                await approvalTx.wait();
+                console.log('Approval successful');
+            }
+
+            console.log('Minting NFT with Higher token...');
+            const transaction = await nftContract.mintWithHigher(primaryColor, isBGMode, invertMode);
+
+            console.log('Transaction sent. Waiting for confirmation...');
+            const receipt = await transaction.wait();
+
+            const transactionHash = receipt.transactionHash;
+            console.log("🚀 ~ mintArrow: ~ receipt:", receipt)
+            console.log('NFT minted successfully!');
+            console.log('Transaction Hash:', transactionHash);
+
+            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
+            console.log('Basescan Link:', etherscanLink);
+
+            // Find the Transfer event in the logs
+            const transferLog = receipt.logs.find((log: any) => {
+                try {
+                    const parsedLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(log);
+                    return parsedLog.name === 'Transfer' && parsedLog.args.from === ethers.constants.AddressZero;
+                } catch {
+                    return false;
+                }
+            });
+
+            if (!transferLog) {
+                throw new Error('No mint Transfer event found in the transaction');
+            }
+
+            // Parse the Transfer event to get the contract address and token ID
+            const parsedTransferLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(transferLog);
+            const tokenId = parsedTransferLog.args.tokenId;
+            console.log("🚀 ~ mintArrow: ~ tokenId:", tokenId)
+
+            // Get the token URI
+            const tokenURI = await nftContract.tokenURI(tokenId);
+            console.log("🚀 ~ mintArrow: ~ tokenURI:", tokenURI)
+
+            // fetch the json from the uri
+            const tokenData = await fetch(tokenURI).then(a => a.json());
+            console.log("🚀 ~ mintArrow: ~ tokenData:", tokenData)
+
+            set({ sidebarMode: "success" })
+        } catch (error) {
+            console.error(error);
+            set({ sidebarMode: "mint" });
+
+            toast({
+                variant: "destructive",
+                title: 'Something went wrong.',
+                description: 'Could not mint NFT, please try again later.'
+            });
+        }
+    },
+
     mintArrow: async (): Promise<void> => {
         if (typeof window.ethereum === 'undefined') {
             return;
@@ -87,18 +205,18 @@ export const useColorStore = create<ColorState>((set, get) => ({
 
 
         // Specify the Base Sepolia network
-        const baseSepolia = {
-            chainId: '0x14a34', // 84532 in decimal
-            chainName: 'Base Sepolia',
-            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-            rpcUrls: ['https://sepolia.base.org'],
-            blockExplorerUrls: ['https://sepolia.basescan.org'],
-        };
+        // const baseSepolia = {
+        //     chainId: '0x14a34', // 84532 in decimal
+        //     chainName: 'Base Sepolia',
+        //     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        //     rpcUrls: ['https://sepolia.base.org'],
+        //     blockExplorerUrls: ['https://sepolia.basescan.org'],
+        // };
         // Request network change
         try {
             await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: baseSepolia.chainId }],
+                params: [{ chainId: base.id }],
             });
         } catch (switchError) {
             // This error code indicates that the chain has not been added to MetaMask.
@@ -106,7 +224,7 @@ export const useColorStore = create<ColorState>((set, get) => ({
                 try {
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
-                        params: [baseSepolia],
+                        params: [base.id],
                     });
                 } catch (addError) {
                     console.error('Failed to add Base Sepolia network', addError);

@@ -25,7 +25,7 @@ const GetUserNFTsWithMetadata = () => {
         setIsLoading(true);
         try {
             if (!address) return;
-            const response = await fetch(`/api/getColors?ownerAddress=${address}&chain=sepolia&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}`);
+            const response = await fetch(`/api/getColors?ownerAddress=${address}&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch NFTs');

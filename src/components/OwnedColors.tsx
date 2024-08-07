@@ -27,7 +27,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         primaryColor, setPrimaryColor,
         secondaryColor, setSecondaryColor,
         isGradientMode, setIsGradientMode,
-        isBGMode, mintArrow, mintError,
+        isBGMode, mintArrow, mintError, mintArrowWithHigher,
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
     const [isFetching, setIsFetching] = useState<boolean>(true)
@@ -254,8 +254,22 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 >
                     <span>Mint</span>
                 </ShineBorder>
-                {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
+
             </div>
+            <div
+                onClick={mintArrowWithHigher}
+                className='mt-2 w-full'
+            >
+                <ShineBorder
+                    className="text-center text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                    borderWidth={2}
+                >
+                    <span>Mint with HIgher</span>
+                </ShineBorder>
+
+            </div>
+            {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>}
         </div>
     );
 };

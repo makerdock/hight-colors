@@ -12,6 +12,8 @@
   "dependencies": {
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
+    "@paywithglide/glide-js": "^0.9.11",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
     "@rainbow-me/rainbowkit": "^2.1.3",
