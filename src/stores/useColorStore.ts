@@ -1,11 +1,14 @@
-import { ethers, providers } from 'ethers'
-import { base } from 'viem/chains'
+import { ethers } from 'ethers'
 import { create } from 'zustand'
 import { toast } from '~/components/ui/use-toast'
 import { env } from '~/env'
 import { higherArrowNftAbi } from '~/utils/abi'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
+import { wagmiCoreConfig } from '~/utils/rainbowConfig'
+// import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
+import { getChainId, switchChain, waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { base } from 'wagmi/chains'
 
 interface ColorState {
     primaryColor: string | undefined
@@ -23,7 +26,7 @@ interface ColorState {
     setInvertMode: (invert: boolean) => void
     setMintError: (error: string | undefined) => void
     mintColor: (color: string, address: string) => Promise<void>
-    mintArrow: () => Promise<void>
+    // mintArrow: () => Promise<void>
     mintArrowWithHigher: () => Promise<void>
     transactionHash?: string
     etherscanLink?: string
@@ -196,131 +199,6 @@ export const useColorStore = create<ColorState>((set, get) => ({
         }
     },
 
-    mintArrow: async (): Promise<void> => {
-        if (typeof window.ethereum === 'undefined') {
-            return;
-        }
-
-
-        // Specify the Base Sepolia network
-        // const baseSepolia = {
-        //     chainId: '0x14a34', // 84532 in decimal
-        //     chainName: 'Base Sepolia',
-        //     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        //     rpcUrls: ['https://sepolia.base.org'],
-        //     blockExplorerUrls: ['https://sepolia.basescan.org'],
-        // };
-        // Request network change
-
-        // check the current chain
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        console.log("🚀 ~ mintArrow: ~ provider:", provider)
-        const chainIdBigInt = (await provider.getNetwork()).chainId; //returns BigInt => 1337n for hardhat
-        console.log("🚀 ~ mintArrow: ~ chainIdBigInt:", chainIdBigInt)
-        const chainId = Number(chainIdBigInt) // convert to interger;
-
-        // returns a bigint
-        // const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        console.log("🚀 ~ mintArrow: ~ chainId:", chainId)
-
-        console.log("🚀 ~ mintArrow: ~ base.id:", ethers.utils.hexlify(base.id))
-
-        if (chainId === base.id) {
-            console.log('Already on Base Sepolia network');
-        }
-
-        try {
-            await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [base],
-            });
-        } catch (switchError) {
-            // This error code indicates that the chain has not been added to MetaMask.
-            if ((switchError as any).code === 4902) {
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [base],
-                    });
-                } catch (addError) {
-                    console.error('Failed to add Base Sepolia network', addError);
-                    return;
-                }
-            } else {
-                console.error('Failed to switch to Base Sepolia network', switchError);
-                return;
-            }
-        }
-
-
-        const { primaryColor, secondaryColor, isBGMode, invertMode } = get();
-
-        // const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-
-        const contractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
-        const mintContract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
-
-        set({ sidebarMode: "loading" });
-        try {
-            const transaction = await mintContract.mint(primaryColor, isBGMode, invertMode);
-
-            console.log('Transaction sent. Waiting for confirmation...');
-            const receipt = await transaction.wait();
-
-            const transactionHash = receipt.transactionHash;
-            console.log("🚀 ~ mintArrow: ~ receipt:", receipt)
-            console.log('NFT minted successfully!');
-            console.log('Transaction Hash:', transactionHash);
-
-            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
-            console.log('Basescan Link:', etherscanLink);
-
-
-            // Find the Transfer event in the logs
-            const transferLog = receipt.logs.find((log: any) => {
-                try {
-                    const parsedLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(log);
-                    return parsedLog.name === 'Transfer' && parsedLog.args.from === ethers.constants.AddressZero;
-                } catch {
-                    return false;
-                }
-            });
-
-            if (!transferLog) {
-                throw new Error('No mint Transfer event found in the transaction');
-            }
-
-            // Parse the Transfer event to get the contract address and token ID
-            const parsedTransferLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(transferLog);
-            const contractAddress = transferLog.address;
-            const tokenId = parsedTransferLog.args.tokenId;
-            console.log("🚀 ~ mintArrow: ~ tokenId:", tokenId)
-
-
-            // Get the token URI
-            const tokenURI = await mintContract.tokenURI(tokenId);
-            console.log("🚀 ~ mintArrow: ~ tokenURI:", tokenURI)
-
-            // fetch the json from the uri
-            const tokenData = await fetch(tokenURI).then(a => a.json());
-            console.log("🚀 ~ mintArrow: ~ tokenData:", tokenData)
-
-            set({ sidebarMode: "success" })
-            // setTransactionHash(transactionHash);
-            // setEtherscanLink(etherscanLink);
-        } catch (error) {
-            console.error(error);
-            set({ sidebarMode: "mint" });
-
-            toast({
-                variant: "destructive",
-                title: 'Something went wrong.',
-                description: 'Could not mint NFT, please try again later.'
-            });
-
-        }
-    },
 
 
     mintColor: async (color: string, address: string): Promise<void> => {

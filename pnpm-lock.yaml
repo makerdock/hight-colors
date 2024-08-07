@@ -28,6 +28,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.51.15
     version: 5.51.15(react@18.3.1)
+  '@wagmi/core':
+    specifier: ^2.13.3
+    version: 2.13.3(@types/react@18.3.3)(react@18.3.1)(typescript@5.5.4)(viem@2.18.4)
   antd:
     specifier: ^5.20.0
     version: 5.20.0(react-dom@18.3.1)(react@18.3.1)
@@ -4738,6 +4741,29 @@ packages:
 
   /@wagmi/core@2.13.1(@types/react@18.3.3)(react@18.3.1)(typescript@5.5.4)(viem@2.18.4):
     resolution: {integrity: sha512-6ZdgI6dYfpa+IZPU0DZ3XQEQVzs003tKCERzSUNkxmt5cwSMg0XB1kvF5vU9MuPP96K6IcGkqSwAtgCmM5uy2w==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      typescript: '>=5.0.4'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.7(typescript@5.5.4)
+      typescript: 5.5.4
+      viem: 2.18.4(typescript@5.5.4)(zod@3.23.8)
+      zustand: 4.4.1(@types/react@18.3.3)(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - immer
+      - react
+    dev: false
+
+  /@wagmi/core@2.13.3(@types/react@18.3.3)(react@18.3.1)(typescript@5.5.4)(viem@2.18.4):
+    resolution: {integrity: sha512-4DqHTeqXHAjwWz6fftLm9zy8Bqy10D3nsCKtaluY0TPw+tSypDSxvzqTauPPasbmJOGfvx2rwXuoI/yqPwwG4w==}
     peerDependencies:
       '@tanstack/query-core': '>=5.0.0'
       typescript: '>=5.0.4'
