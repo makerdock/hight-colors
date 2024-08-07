@@ -114,6 +114,7 @@ const Home: NextPage = () => {
                   key="mint"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
+                  className='w-full h-full max-h-[80vh] overflow-hidden'
                 >
                   <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
