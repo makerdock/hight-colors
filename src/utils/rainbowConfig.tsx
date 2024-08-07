@@ -14,11 +14,12 @@ import {
 
 import { http, createConfig } from 'wagmi'
 import { base } from 'wagmi/chains'
+import { env } from '~/env';
 
 
 export const wagmiConfig = getDefaultConfig({
-    appName: 'YOUR_APP_NAME',
-    projectId: 'YOUR_PROJECT_ID',
+    appName: 'HigherArrows',
+    projectId: env.NEXT_PUBLIC_WALLET_CONNECT_KEY,
     chains: [base],
     ssr: true, // If your dApp uses server side rendering (SSR)
     transports: {
