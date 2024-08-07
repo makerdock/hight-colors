@@ -155,7 +155,7 @@ export function PaymentCta() {
         try {
 
             console.log("🚀 ~ mintArrow: ~ contractAddress:", contractAddress)
-            const { request } = await simulateContract(wagmiCoreConfig, {
+            const { request } = await simulateContract(wagmiCoreConfig as any, {
                 address: contractAddress as any,
                 functionName: 'mint',
                 abi: higherArrowNftAbi,
@@ -168,7 +168,7 @@ export function PaymentCta() {
                 throw new Error('Transaction failed');
             }
 
-            const receipt = await waitForTransactionReceipt(wagmiCoreConfig, { hash });
+            const receipt = await waitForTransactionReceipt(wagmiCoreConfig as any, { hash });
             console.log('NFT minted successfully!');
             console.log('Transaction Hash:', receipt.transactionHash);
 
