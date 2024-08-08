@@ -47,17 +47,15 @@ const GetUserNFTsWithMetadata = () => {
     if (!nfts.length) return null;
 
     return (
-        <div className='fixed bottom-0 left-0 pb-4 w-full md:visible hidden'>
-
-            {/* <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0'>
-                <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
+        <div className='fixed bottom-0 left-0 pb-4 w-full hidden sm:block '>
+            <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0'>
+                {/* <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
                     Recently Minted NFTs
-                </span>
+                </span> */}
                 <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
-                    Your NFTs
+                    Your Arrow NFTs
                 </span>
-            </div> */}
-
+            </div>
             <div className='flex justify-center space-x-2'>
                 {nfts?.map(({ tokenId, image }) => (
                     <motion.div

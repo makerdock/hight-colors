@@ -68,8 +68,12 @@ const Home: NextPage = () => {
     <div className="min-h-[100dvh] flex flex-col">
       <Head>
         <title>Higher Colors</title>
-        <meta name="description" content="Mint your favorite color as an NFT" />
+        <meta name="description" content="Mint your higher arrow with Base Colors" />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       {!!address && <Nav />}
       <main className="flex-grow flex flex-col lg:flex-row justify-center items-center px-0 relative w-full max-w-4xl mx-auto flex-1 min-h-[100dvh] md:min-h-full">
@@ -144,7 +148,8 @@ const Home: NextPage = () => {
             </AnimatePresence>
           </motion.div>
         </div>}
-        <GetUserNFTs />
+        {!!address && <GetUserNFTs />
+        }
       </main>
     </div>
   )
