@@ -74,18 +74,18 @@ const Home: NextPage = () => {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-        <meta property="og:url" content="https://www.highercolors.com/" />
+        <meta property="og:url" content="https://highercolors.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Higher Colors" />
         <meta property="og:description" content="Mint your higher arrow with Base Colors" />
-        <meta property="og:image" content="https://www.highercolors.com/og.png" />
+        <meta property="og:image" content="https://highercolors.com/og.png" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="highercolors.com" />
-        <meta property="twitter:url" content="https://www.highercolors.com/" />
+        <meta property="twitter:url" content="https://highercolors.com/" />
         <meta name="twitter:title" content="Higher Colors" />
         <meta name="twitter:description" content="Mint your higher arrow with Base Colors" />
-        <meta name="twitter:image" content="https://www.highercolors.com/og.png" />
+        <meta name="twitter:image" content="https://highercolors.com/og.png" />
 
       </Head>
       {!!address && <Nav />}
