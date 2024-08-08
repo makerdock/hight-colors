@@ -2,31 +2,12 @@ import {
     useAccountModal,
     useConnectModal
 } from "@rainbow-me/rainbowkit";
-import { useEffect, useState } from "react";
-import { useAccount, useEnsName } from "wagmi";
+import { useAccount } from "wagmi";
 
 const Nav = () => {
     const { openConnectModal } = useConnectModal();
     const { openAccountModal } = useAccountModal();
     const { address } = useAccount();
-    const [ensData, setEnsData] = useState()
-
-    const getEnsData = async () => {
-        try {
-            if (!address) return;
-            const data = await fetch(`/api/getEns?address=${address}`).then(a => a.json())
-            console.log("🚀 ~ getEnsData ~ data:", data)
-            setEnsData(data);
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    useEffect(() => {
-        if (address) getEnsData()
-    }, [address])
-
-
 
     const walletFormat = (address: string, chars = 4) => {
         return `${address.slice(0, chars)}...${address.slice(-chars)}`;

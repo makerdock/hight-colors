@@ -39,7 +39,7 @@ export const listItem = {
 };
 
 const SuccessSidebar = () => {
-    const { mintedNftMetadata } = useColorStore()
+    const { mintedNftMetadata, setSidebarMode } = useColorStore()
 
     const { primaryColor, isBGMode, invertMode } = extractValuesFromAttributes(mintedNftMetadata?.attributes || []);
     const name = mintedNftMetadata?.name
@@ -47,7 +47,7 @@ const SuccessSidebar = () => {
     const secondaryColor = invertMode ? 'black' : 'white'
 
     const handleRefresh = () => {
-        window.location.reload();
+        setSidebarMode('mint')
     }
 
     return (
@@ -96,13 +96,15 @@ const SuccessSidebar = () => {
                 {mintedNftMetadata?.name && mintedNftMetadata?.image && <ShareOptions name={mintedNftMetadata?.name} image={mintedNftMetadata?.image} />}
 
             </motion.div>
-            <ShineBorder
-                className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                borderWidth={2}
-            >
-                <button onClick={handleRefresh}>MINT AGAIN</button>
-            </ShineBorder>
+            <button onClick={handleRefresh} className='w-full'>
+                <ShineBorder
+                    className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                    borderWidth={2}
+                >
+                    MINT AGAIN
+                </ShineBorder>
+            </button>
         </div>
     )
 }
