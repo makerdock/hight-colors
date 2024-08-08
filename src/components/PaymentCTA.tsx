@@ -348,7 +348,7 @@ export function PaymentCta() {
                     >Pay with 0.0004 Eth</DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={mintArrowWithHigher}
-                    >Pay with 100 $HIGHER</DropdownMenuItem>
+                    >Pay with 200 $HIGHER</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
