@@ -21,8 +21,6 @@ interface OwnedColorsProps {
     onColorSelect: (color: string, isGradient: boolean, isBGMode: boolean, invertMode: boolean) => void;
 }
 
-const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
-
 const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const { address } = useAccount();
     const [ownedColors, setOwnedColors] = useState<ColorNFT[]>([]);

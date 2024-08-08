@@ -179,18 +179,24 @@ export function PaymentCta() {
                     functionName: 'approve',
                     args: [nftContractAddress as any, mintPrice],
                 })
+                await new Promise((resolve) => setTimeout(resolve, 5000))
+
             }
 
             console.log("🚀 ~ mintArrowWithHigher ~ primaryColor, isBGMode, invertMode:", primaryColor, isBGMode, invertMode)
 
-            // Mint NFT with Higher tokens
-            const mintHash = await writeContractAsync({
+            // delay for 1s
+
+            const { request } = await simulateContract(wagmiCoreConfig as any, {
                 address: nftContractAddress as any,
                 abi: higherArrowNftAbi,
                 functionName: 'mintWithHigher',
                 args: [primaryColor, isBGMode, invertMode],
                 gas: 2000000n
             })
+
+            // Mint NFT with Higher tokens
+            const mintHash = await writeContractAsync(request)
             console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
 
 
