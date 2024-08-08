@@ -35,9 +35,9 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta property="og:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content={token.image.originalUrl} />
+        <meta property="fc:frame:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="og:image" content={token.image.thumbnailUrl} />
         <meta property="fc:frame:image:aspect_ratio" content="1:1" />
         <meta property="fc:frame:button:1" content="Check this out" />
