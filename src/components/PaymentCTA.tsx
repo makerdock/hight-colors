@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
-import { readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
+import { getBalance, readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
 import { createWalletClient, custom, decodeEventLog, formatEther } from "viem"
 import { useAccount, useWriteContract } from "wagmi"
 import { base } from 'wagmi/chains'
@@ -215,6 +215,31 @@ export function PaymentCta() {
             })
 
             await walletClient.switchChain({ id: base.id })
+        }
+
+
+        const mintPrice = await readContract(wagmiCoreConfig as any, {
+            address: account.address as any,
+            abi: higherArrowNftAbi,
+            functionName: 'ethMintPrice',
+        }) as bigint
+
+        console.log("Mint price in ETH:", formatEther(mintPrice))
+
+        // Fetch ETH balance
+        const balance = await getBalance(wagmiCoreConfig as any, {
+            address: account.address as any,
+        })
+
+        console.log("ETH balance:", formatEther(balance.value))
+
+        if (balance.value < mintPrice) {
+            toast({
+                variant: "destructive",
+                title: 'Insufficient balance',
+                description: `You need at least ${formatEther(mintPrice)} ETH to mint an NFT. Your current balance is ${formatEther(balance.value)} ETH.`
+            });
+            return;
         }
 
         const contractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;

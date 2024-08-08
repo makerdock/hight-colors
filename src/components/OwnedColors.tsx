@@ -7,11 +7,11 @@ import { useAccount } from 'wagmi';
 import { env } from '~/env';
 import useColorStore from '~/stores/useColorStore';
 import { AlchemyResponse } from '~/utils/alchemyResponse';
-import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import Toggle from './Toggle';
 import { PaymentCta } from './PaymentCTA';
 import { wagmiCoreConfig } from '~/utils/rainbowConfig'
 import { readContract } from '@wagmi/core'
+import { higherArrowNftAbi } from '~/utils/abi';
 
 interface ColorNFT {
     color: string;
@@ -51,7 +51,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             const contractAddress = '0x7Bc1C072742D8391817EB4Eb2317F98dc72C61dB';
-            const contract = new ethers.Contract(contractAddress, ColorArrowNftAbi, signer);
+            const contract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
             setColorCheckerContract(contract);
         }
     }, [address]);

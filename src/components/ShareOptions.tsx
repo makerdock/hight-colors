@@ -13,7 +13,7 @@ const ShareOptions = () => {
 
     const tokenId = mintedNftMetadata?.name.split('Color Arrow #')[1]
 
-    const shareMessage = `I just minted ${name} on Higher! Check it out!`
+    const shareMessage = `I just minted ${mintedNftMetadata?.name || ''} on Higher! Check it out!`
     const shareUrl = `https://higher.xyz/nft/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
@@ -53,7 +53,7 @@ const ShareOptions = () => {
         // Assuming mintedNftMetadata.image is a base64 encoded image
         const link = document.createElement('a')
         link.href = mintedNftMetadata?.image || ''
-        link.download = `${name}.png`
+        link.download = `${mintedNftMetadata?.name || ''}.png`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)

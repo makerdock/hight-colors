@@ -9,8 +9,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PiSpinnerGapLight } from "react-icons/pi";
 import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from 'wagmi';
-import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
 import { useToast } from './ui/use-toast';
+import { higherArrowNftAbi } from '~/utils/abi';
 
 interface ColorMinterProps {
     colorCheckerContract: ethers.Contract | null;
@@ -93,7 +93,7 @@ const ColorMinter: React.FC<ColorMinterProps> = ({ colorCheckerContract, onClose
         const signer = provider.getSigner();
 
         const contractAddress = '0x7Bc1C072742D8391817EB4Eb2317F98dc72C61dB';
-        const mintContract = new ethers.Contract(contractAddress, ColorArrowNftAbi, signer);
+        const mintContract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
 
         setIsMinting(true);
         try {

@@ -4,7 +4,6 @@ import { toast } from '~/components/ui/use-toast'
 import { env } from '~/env'
 import { higherArrowNftAbi } from '~/utils/abi'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
-import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
 import { base } from 'wagmi/chains'
 
@@ -33,7 +32,7 @@ interface ColorState {
     setIsBGMode: (isBG: boolean) => void
     setInvertMode: (invert: boolean) => void
     setMintError: (error: string | undefined) => void
-    mintColor: (color: string, address: string) => Promise<void>
+
     // mintArrow: () => Promise<void>
     // mintArrowWithHigher: () => Promise<void>
     transactionHash?: string
@@ -92,53 +91,6 @@ export const useColorStore = create<ColorState>((set, get) => ({
             set({ isFetchingOwnedArrows: false });
         }
     },
-
-    mintColor: async (color: string, address: string): Promise<void> => {
-        if (typeof window.ethereum === 'undefined') {
-            return;
-        }
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-
-        const contractAddress = '0x7Bc1C072742D8391817EB4Eb2317F98dc72C61dB';
-        const mintContract = new ethers.Contract(contractAddress, ColorArrowNftAbi, signer);
-
-        // setIsMinting(true);
-        set({ mintError: undefined, sidebarMode: "loading" });
-        try {
-            const hexColor = typeof color === 'string' ? color : (color as any)?.toHexString();
-            const colorWithoutHash = hexColor?.slice(1);
-
-            const value = await mintContract.mintPrice();
-
-            const transaction = await mintContract.mint(hexColor, colorWithoutHash, address, {
-                value: value
-            });
-
-            console.log('Transaction sent. Waiting for confirmation...');
-            const receipt = await transaction.wait();
-
-            const transactionHash = receipt.transactionHash;
-            console.log('NFT minted successfully!');
-            console.log('Transaction Hash:', transactionHash);
-
-            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
-            console.log('Basescan Link:', etherscanLink);
-
-            // setTransactionHash(transactionHash);
-            // setEtherscanLink(etherscanLink);
-            set({ mintError: undefined, sidebarMode: "success" });
-        } catch (error) {
-            console.error('Failed to mint NFT:', error);
-            set({ sidebarMode: "mint" });
-            toast({
-                variant: "destructive",
-                title: 'Something went wrong.',
-                description: 'Could not mint NFT, please try again later.'
-            });
-        }
-    }
 }))
 
 export default useColorStore
