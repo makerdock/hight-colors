@@ -304,7 +304,7 @@ export function PaymentCta() {
     return (
         <>
             <DropdownMenu>
-                <DropdownMenuTrigger className="hover:outline-none focus:outline-none">
+                <DropdownMenuTrigger className="hover:outline-none focus:outline-none w-full sticky bottom-2">
                     <ShineBorder
                         className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer"
                         color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}

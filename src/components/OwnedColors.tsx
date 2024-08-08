@@ -254,7 +254,9 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 </div>
                 {renderColorPickers()}
             </div>
-            <PaymentCta />
+            <div className="sticky bottom-0 flex-col items-stretch">
+                <PaymentCta />
+            </div>
         </div>
     );
 };
