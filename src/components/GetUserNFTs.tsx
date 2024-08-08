@@ -25,7 +25,7 @@ const GetUserNFTsWithMetadata = () => {
         setIsLoading(true);
         try {
             if (!address) return;
-            const response = await fetch(`/api/getColors?ownerAddress=${address}&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}`);
+            const response = await fetch(`/api/getColors?ownerAddress=${address}&contractAddress=${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}&limit=8`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch NFTs');
@@ -48,10 +48,7 @@ const GetUserNFTsWithMetadata = () => {
 
     return (
         <div className='fixed bottom-0 left-0 pb-4 w-full hidden sm:block '>
-            <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0'>
-                {/* <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
-                    Recently Minted NFTs
-                </span> */}
+            <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0 peer-hover:opacity-0'>
                 <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
                     Your Arrow NFTs
                 </span>
@@ -60,8 +57,8 @@ const GetUserNFTsWithMetadata = () => {
                 {nfts?.map(({ tokenId, image }) => (
                     <motion.div
                         key={tokenId}
-                        initial={{ y: 50 }}
-                        animate={{ y: 50 }}
+                        initial={{ y: 60 }}
+                        animate={{ y: 60 }}
                         whileHover={{ y: 0 }}
                         transition={{ duration: 0.3 }}
                         className="cursor-pointer relative group"

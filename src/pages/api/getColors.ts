@@ -9,14 +9,14 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { ownerAddress, contractAddress, chain = "mainnet" } = req.query
+    const { ownerAddress, contractAddress, chain = "mainnet", limit = 100 } = req.query
 
     if (!ownerAddress || typeof ownerAddress !== 'string') {
         return res.status(400).json({ error: 'Owner address is required' })
     }
 
     const options = { method: 'GET', headers: { accept: 'application/json' } };
-    const url = `https://base-${chain.toString()}.g.alchemy.com/nft/v3/${apiKey.toString()}/getNFTsForOwner?owner=${ownerAddress.toString()}&contractAddresses[]=${contractAddress?.toString()}&withMetadata=true&pageSize=100`;
+    const url = `https://base-${chain.toString()}.g.alchemy.com/nft/v3/${apiKey.toString()}/getNFTsForOwner?owner=${ownerAddress.toString()}&contractAddresses[]=${contractAddress?.toString()}&withMetadata=true&pageSize=${limit}`;
 
     try {
         const response = await fetch(url, options);
