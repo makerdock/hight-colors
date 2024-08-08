@@ -219,21 +219,24 @@ export function PaymentCta() {
 
 
         const mintPrice = await readContract(wagmiCoreConfig as any, {
-            address: account.address as any,
+            address: nftContractAddress as any,
             abi: higherArrowNftAbi,
             functionName: 'ethMintPrice',
         }) as bigint
 
-        console.log("Mint price in ETH:", formatEther(mintPrice))
+        const ethMintPriceInEth = formatEther(mintPrice)
+        console.log("ETH Mint price:", ethMintPriceInEth)
 
-        // Fetch ETH balance
+        // // Fetch ETH balance
         const balance = await getBalance(wagmiCoreConfig as any, {
             address: account.address as any,
         })
 
-        console.log("ETH balance:", formatEther(balance.value))
+        const balanceInEth = formatEther(balance.value)
+        console.log("ETH balance:", balanceInEth)
 
-        if (balance.value < mintPrice) {
+
+        if (parseFloat(balanceInEth) < parseFloat(ethMintPriceInEth)) {
             toast({
                 variant: "destructive",
                 title: 'Insufficient balance',
@@ -250,9 +253,10 @@ export function PaymentCta() {
             console.log("🚀 ~ mintArrow: ~ contractAddress:", contractAddress)
             const { request } = await simulateContract(wagmiCoreConfig as any, {
                 address: contractAddress as any,
-                functionName: 'mint',
+                functionName: 'mintWithEth',
                 abi: higherArrowNftAbi,
                 args: [primaryColor, isBGMode, invertMode],
+                value: mintPrice,
             })
             const hash = await writeContractAsync(request)
             console.log("🚀 ~ mintArrow ~ hash:", hash)
