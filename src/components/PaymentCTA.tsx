@@ -18,6 +18,7 @@ import { base } from 'wagmi/chains'
 import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
 import { toast } from "./ui/use-toast"
+import { useEffect, useState } from "react"
 
 const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
 const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
@@ -33,6 +34,7 @@ export function PaymentCta() {
     } = useColorStore();
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
+    const [balance, setBalance] = useState<bigint | null>(null);
 
     const getTokenUriFromHash = async (hash: string) => {
 
@@ -252,13 +254,59 @@ export function PaymentCta() {
         }
     }
 
+    const higherBalance = async (ownerAddress: string | undefined) => {
+        try {
+            const balance = await readContract(wagmiCoreConfig as any, {
+                address: higherTokenAddress as any,
+                abi: [{
+                    inputs: [{ name: 'account', type: 'address' }],
+                    name: 'balanceOf',
+                    outputs: [{ name: '', type: 'uint256' }],
+                    stateMutability: 'view',
+                    type: 'function'
+                }],
+                functionName: 'balanceOf',
+                args: [ownerAddress as any],
+            })
+            setBalance(BigInt(balance));
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+            setBalance(null);
+        }
+    }
+
+    const formatBalance = (balanceBigInt: bigint | null): string => {
+        if (balanceBigInt === null) return 'N/A';
+        return balanceBigInt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    const renderBalanceMessage = () => {
+        if (balance === null) {
+            return;
+        }
+
+        if (balance < BigInt(100)) {
+            return (
+                <div className='text-center items-center'>
+                    <p className='text-xs text-slate-600 text-center'>Your Balance: {formatBalance(balance)} $Higher</p>
+                    <p className='text-xs text-slate-600 text-center'> <a href="https://www.buysomehigher.com/" target="_blank"
+                        rel="noopener noreferrer" className="text-blue-500 hover:underline">Feeling low? Get Higher</a></p>
+                </div>
+            );
+        }
+        return <p className='text-xs text-slate-600'>Your Balance: {formatBalance(balance)} $Higher</p>;
+    };
+
+    useEffect(() => {
+        higherBalance(account.address);
+    }, [account.address]);
 
     return (
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger className="hover:outline-none focus:outline-none w-full sticky bottom-2">
                     <ShineBorder
-                        className="text-center text-sm font-bold mb-4 uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                        className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer"
                         color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
                         borderWidth={2}
                     >
@@ -274,6 +322,9 @@ export function PaymentCta() {
                     >Pay with 100 $HIGHER</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+            {renderBalanceMessage()}
+            <span className=" text-slate-600 text-center text-base font-bold mt-4"> 10/ 1000 Mints</span>
+            {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 
     )
