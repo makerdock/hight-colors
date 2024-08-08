@@ -257,7 +257,6 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             <div className="sticky bottom-0 flex-col items-stretch">
                 <PaymentCta />
             </div>
-            <span className="text-center text-slate-600 text-sm"> 10/ 1000 Mints</span>
         </div>
     );
 };
