@@ -352,7 +352,7 @@ export function PaymentCta() {
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
-            <span className=" text-slate-600 text-center text-base font-bold mt-4"> 10/ 1000 Mints</span>
+            <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> 10/ 1000 Mints</span>
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 
