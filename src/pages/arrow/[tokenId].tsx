@@ -8,6 +8,7 @@ import { Network, Alchemy, Nft } from 'alchemy-sdk';
 import { GetServerSideProps } from 'next';
 import { env } from '~/env'
 import ArrowDetailsSidebar from '~/components/ArrowDetailsSidebar'
+import { getArrowColors } from '~/utils/getArrowColors'
 
 const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }> = ({ token, farcasterAccount, ownerAddress }) => {
 
@@ -17,13 +18,20 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
   }
   const { primaryColor, invertMode, isBGMode } = extractValuesFromAttributes(token.raw.metadata?.attributes)
 
+  const { arrowColor, backgroundColor } = getArrowColors({
+    primaryColor,
+    secondaryColor: primaryColor,
+    bgMode: true,
+    invertMode: false
+  });
+
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <Head>
         <title>Higher Colors</title>
         <meta name="description" content="Mint your higher arrow with Base Colors" />
         <link rel="icon" href="/arrow.svg" />
-        <meta property="og:image" content="/og.png" />
+        <meta property="og:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
