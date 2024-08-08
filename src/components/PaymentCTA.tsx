@@ -12,13 +12,12 @@ import {
 } from "./ui/dropdown-menu"
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
 import { readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
-import { createWalletClient, custom, formatEther, parseEther } from "viem"
-import { useAccount, useChainId, useSendTransaction, useSignTypedData, useSwitchChain, useWriteContract } from "wagmi"
+import { createWalletClient, custom, decodeEventLog, formatEther } from "viem"
+import { useAccount, useWriteContract } from "wagmi"
 import { base } from 'wagmi/chains'
 import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
 import { toast } from "./ui/use-toast"
-import { currencies } from "@paywithglide/glide-js";
 
 const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
 const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
@@ -33,32 +32,63 @@ export function PaymentCta() {
     } = useColorStore();
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
-    const currentChainId = useChainId();
-    const { switchChainAsync } = useSwitchChain();
-    const { sendTransactionAsync } = useSendTransaction();
-    const { signTypedDataAsync } = useSignTypedData();
 
+    const getTokenUriFromHash = async (hash: string) => {
 
+        const receipt = await waitForTransactionReceipt(wagmiCoreConfig as any, { hash: hash as any });
 
-    // Check allowance
-    // const { data: allowance } = useReadContract({
-    //     address: higherTokenAddress as any,
-    //     abi: [
-    //         {
-    //             inputs: [
-    //                 { name: 'owner', type: 'address' },
-    //                 { name: 'spender', type: 'address' }
-    //             ],
-    //             name: 'allowance',
-    //             outputs: [{ name: '', type: 'uint256' }],
-    //             stateMutability: 'view',
-    //             type: 'function'
-    //         }
-    //     ],
-    //     functionName: 'allowance',
-    //     args: [account.address, nftContractAddress],
-    // })
+        if (!receipt) {
+            throw new Error('Transaction failed');
+        }
 
+        // Find the Transfer event in the logs
+        const transferLog = receipt.logs.find((log) => {
+            try {
+                const event = decodeEventLog({
+                    abi: higherArrowNftAbi,
+                    data: log.data,
+                    topics: log.topics,
+                })
+                return event.eventName === 'Transfer' && (event.args as any)?.from === '0x0000000000000000000000000000000000000000'
+            } catch {
+                return false
+            }
+        })
+
+        if (!transferLog) {
+            throw new Error('No mint Transfer event found in the transaction')
+        }
+
+        // Parse the Transfer event to get the token ID
+        const event = decodeEventLog({
+            abi: higherArrowNftAbi,
+            data: transferLog.data,
+            topics: transferLog.topics,
+        })
+        const tokenId: number = (event.args as any)?.tokenId
+
+        console.log("🚀 ~ getTokenUriFromHash: ~ tokenId:", tokenId)
+
+        // Get the token URI
+        const tokenURI = await readContract(wagmiCoreConfig as any, {
+            address: nftContractAddress as any,
+            abi: higherArrowNftAbi,
+            functionName: 'tokenURI',
+            args: [tokenId],
+        })
+
+        console.log("🚀 ~ getTokenUriFromHash: ~ tokenURI:", tokenURI)
+
+        if (!tokenURI) {
+            throw new Error('Failed to fetch token URI')
+        }
+
+        // Fetch the JSON from the URI
+        const tokenData = await fetch(tokenURI as string).then(response => response.json())
+        console.log("🚀 ~ getTokenUriFromHash: ~ tokenData:", tokenData)
+
+        return { tokenId, tokenURI, tokenData }
+    }
 
     const mintArrowWithHigher = async () => {
         const chainId = account.chainId
@@ -153,7 +183,9 @@ export function PaymentCta() {
             console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
 
 
-            // await fetchOwnedArrows(address)
+            await getTokenUriFromHash(mintHash)
+
+            await fetchOwnedArrows(account.address as any)
             setSidebarMode("success")
         } catch (error) {
             console.error(error)
@@ -201,6 +233,7 @@ export function PaymentCta() {
             }
 
             const receipt = await waitForTransactionReceipt(wagmiCoreConfig as any, { hash });
+            console.log("🚀 ~ mintArrow ~ receipt:", receipt)
             console.log('NFT minted successfully!');
             console.log('Transaction Hash:', receipt.transactionHash);
 
