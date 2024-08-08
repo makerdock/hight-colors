@@ -7,10 +7,10 @@ import classNames from 'classnames'
 const LoadingSidebar = () => {
     return (
         <div
-            className='relative w-full h-full flex items-center justify-center px-6 overflow-hidden'
+            className='relative w-full h-[50dvh] flex items-center justify-center px-6 overflow-hidden'
         >
             <Particles
-                className="absolute inset-0"
+                className="absolute inset-0 h-[50dvh] w-[100vh]"
                 quantity={100}
                 ease={80}
                 color={"#000"}

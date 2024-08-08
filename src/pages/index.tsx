@@ -97,15 +97,14 @@ const Home: NextPage = () => {
           }
         </div>
         {!!address && <div
-          className={classNames('md:flex flex-1 md:flex-auto items-stretch border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
+          className={classNames('flex flex-col md:flex-row flex-1 md:flex-auto items-stretch border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
           )}
         >
           <motion.div
-            // onClick={() => setSidebarMode(sidebarMode === 'mint' ? 'success' : 'mint')}
             style={{
               backgroundColor: isBGMode ? primaryColor : invertMode ? 'black' : 'white',
             }}
-            animate className="w-full h-full flex place-content-center aspect-square max-h-52 md:max-h-[70vh] sticky top-0 pt-12 md:pt-0">
+            animate className="w-full h-full flex place-content-center aspect-square max-h-[50dvh] md:max-h-[80dvh] sticky top-0 md:pt-0">
             {!!address && <Arrow
               primaryColor={primaryColor}
               invertMode={invertMode}
@@ -121,7 +120,7 @@ const Home: NextPage = () => {
             animate={{ x: "0%", }}
             transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
             exit={{ x: '100%' }}
-            className="lg:mt-0 border-l-1 bg-white border-black/20 md:min-w-[300px] border-l border-slate-200 md:h-auto h-auto overflow-y-scroll overflow-x-hidden relative flex-1"
+            className="lg:mt-0 border-l-1 flex md:block  border-black/20 md:min-w-[300px] border-l border-slate-200 md:h-full h-full overflow-y-scroll overflow-x-hidden relative flex-1"
           >
             <AnimatePresence
               initial={false}
@@ -131,17 +130,16 @@ const Home: NextPage = () => {
                   key="mint"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
-                  className='w-full h-full md:max-h-max max-h-[70vh] overflow-hidden'
+                  className='w-full h-full md:max-h-max max-h-[80dvh] overflow-hidden'
                 >
                   <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
               }
               {sidebarMode === "loading" &&
                 <motion.div
-                  key="loading"
-                  initial={{ opacity: '0%', }}
-                  animate={{ opacity: "100%", }}
-                  className='w-full h-full max-h-[70vh] overflow-hidden'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className='w-full h-full flex-1 overflow-hidden min-h-[50dvh]'
                 >
                   <LoadingSidebar />
                 </motion.div>
@@ -153,7 +151,7 @@ const Home: NextPage = () => {
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
                   transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
-                  className='w-full h-full max-h-[70vh] overflow-hidden'
+                  className='w-full h-full max-h-[80dvh] overflow-hidden'
                 >
                   <SuccessSidebar />
                 </motion.div>
