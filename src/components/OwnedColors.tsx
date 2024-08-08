@@ -155,23 +155,31 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                 ))}
 
                 {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div key={index} className='animate-pulse bg-slate-200 aspect-square rounded' />)}
-
-                <AnimatePresence>
+                {/* <AnimatePresence>
                     {!isFetching && <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: 'auto' }}
                         exit={{ height: 0 }}
                         className="w-full col-span-full row-span-1 col-start-1 flex-1 overflow-hidden p-1"
                     >
-                        <ColorMinter
+                        {/* <ColorMinter
                             onClose={() => {
                                 address && fetchOwnedColors(address)
                             }}
-                            colorCheckerContract={colorCheckerContract} />
-                    </motion.div>}
-                </AnimatePresence>
+                            colorCheckerContract={colorCheckerContract} /> */}
+                {/* </motion.div>}
+                </AnimatePresence> */}
             </div>
-
+            <span className='text-sm text-slate-600'>
+                <a
+                    href="https://www.basecolors.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className='text-sm text-slate-600 	text-decoration-line '
+                >
+                    Get more Base Colors
+                </a>
+            </span>
             {/* {ownedColors.length > 1 && <>
                 <div>
                     <div className="flex justify-start items-center mt-4">
@@ -225,13 +233,13 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             <div className="flex-1 mb-6">
                 <div className="mb-1">
                     <div className="flex justify-start  items-center">
-                        <h2 className="text-3xl font-semibold text-black flex-1">BaseColors</h2>
+                        <h2 className="text-3xl font-semibold text-black flex-1">Base Colors</h2>
                         <button
                             onClick={handleRefresh}
                             className="text-slate-400 hover:text-slate-800 transition-colors"
                             disabled={isFetching}
                         >
-                            <ArrowPathIcon className={`h-5 w-5 ml-3 ${isFetching ? 'animate-spin' : ''}`} />
+                            <ArrowPathIcon className={`h-5 w-5 ${isFetching ? 'animate-spin' : ''}`} />
                         </button>
                     </div>
                     <p className='text-sm text-slate-600'>

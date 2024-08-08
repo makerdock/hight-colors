@@ -66,7 +66,7 @@ export function PaymentCta() {
             // await switchNetwork?.(base.id)
         }
 
-        // setSidebarMode("loading")
+        setSidebarMode("loading")
 
         try {
             // Check Higher token balance
@@ -148,12 +148,13 @@ export function PaymentCta() {
                 abi: higherArrowNftAbi,
                 functionName: 'mintWithHigher',
                 args: [primaryColor, isBGMode, invertMode],
+                gas: 2000000n
             })
             console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
 
 
             // await fetchOwnedArrows(address)
-            // setSidebarMode("success")
+            setSidebarMode("success")
         } catch (error) {
             console.error(error)
             setSidebarMode("mint")
