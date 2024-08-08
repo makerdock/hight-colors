@@ -36,7 +36,6 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
 
-
         {/* <!-- Twitter Meta Tags --> */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="highercolors.com" />
