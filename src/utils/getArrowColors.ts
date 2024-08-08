@@ -1,26 +1,21 @@
 interface ArrowColorProps {
     primaryColor?: string;
-    secondaryColor?: string;
     bgMode: boolean;
     invertMode: boolean;
 }
 
-export function getArrowColors({ primaryColor, secondaryColor, bgMode, invertMode }: ArrowColorProps): { arrowColor: string; backgroundColor: string } {
-    // Default secondaryColor to primaryColor if not provided
-    const effectiveSecondaryColor = secondaryColor || primaryColor;
+export function getArrowColors({ primaryColor, bgMode, invertMode }: ArrowColorProps): { arrowColor: string; backgroundColor: string } {
+    // Determine the contrast color (black or white)
+    const contrastColor = invertMode ? 'black' : 'white';
 
-    // Determine fallback color based on invertMode
-    const fallbackColor = invertMode ? 'black' : 'white';
+    // If primaryColor is not provided, default to the contrast color
+    const effectivePrimaryColor = primaryColor || contrastColor;
 
     // Determine background color
-    const backgroundColor = bgMode && primaryColor ?
-        `linear-gradient(to bottom right, ${primaryColor}, ${effectiveSecondaryColor})` :
-        fallbackColor;
+    const backgroundColor = bgMode ? effectivePrimaryColor : contrastColor;
 
     // Determine arrow color
-    const arrowColor = !bgMode && primaryColor ?
-        `linear-gradient(to bottom right, ${primaryColor}, ${effectiveSecondaryColor})` :
-        fallbackColor;
+    const arrowColor = bgMode ? contrastColor : effectivePrimaryColor;
 
-    return { arrowColor, backgroundColor };
+    return { arrowColor: arrowColor.replace('#', ''), backgroundColor: backgroundColor.replace('#', '') };
 }

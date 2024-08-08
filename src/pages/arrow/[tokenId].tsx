@@ -20,10 +20,11 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
 
   const { arrowColor, backgroundColor } = getArrowColors({
     primaryColor,
-    secondaryColor: primaryColor,
     bgMode: true,
     invertMode: false
   });
+
+  console.log("🚀 ~ arrowColor, backgroundColor:", arrowColor, backgroundColor)
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
