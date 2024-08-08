@@ -38,7 +38,6 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta name="twitter:card" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="fc:frame" content="vNext" />
         <meta property="fc:frame:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
-        <meta property="og:image" content={token.image.thumbnailUrl} />
         <meta property="fc:frame:image:aspect_ratio" content="1:1" />
         <meta property="fc:frame:button:1" content="Check this out" />
         <meta property="fc:frame:button:1:action" content="link" />
