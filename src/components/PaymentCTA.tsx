@@ -1,8 +1,8 @@
 "use client"
 
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 
 import useColorStore from "~/stores/useColorStore"
+import { wagmiCoreConfig } from '~/utils/rainbowConfig'
 import ShineBorder from "./magicui/shine-border"
 import {
     DropdownMenu,
@@ -10,16 +10,19 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import { wagmiCoreConfig } from '~/utils/rainbowConfig'
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
-import { simulateContract, switchChain, waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
+import { createWalletClient, custom, formatEther, parseEther } from "viem"
+import { useAccount, useChainId, useSendTransaction, useSignTypedData, useSwitchChain, useWriteContract } from "wagmi"
 import { base } from 'wagmi/chains'
 import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
 import { toast } from "./ui/use-toast"
-import { useAccount, useChainId, useSimulateContract, useWriteContract } from "wagmi"
-import { ethers } from "ethers"
-import { createWalletClient, custom } from "viem"
+import { currencies } from "@paywithglide/glide-js";
+
+const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
+const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
+
 
 export function PaymentCta() {
     const {
@@ -30,108 +33,136 @@ export function PaymentCta() {
     } = useColorStore();
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
+    const currentChainId = useChainId();
+    const { switchChainAsync } = useSwitchChain();
+    const { sendTransactionAsync } = useSendTransaction();
+    const { signTypedDataAsync } = useSignTypedData();
+
+
+
+    // Check allowance
+    // const { data: allowance } = useReadContract({
+    //     address: higherTokenAddress as any,
+    //     abi: [
+    //         {
+    //             inputs: [
+    //                 { name: 'owner', type: 'address' },
+    //                 { name: 'spender', type: 'address' }
+    //             ],
+    //             name: 'allowance',
+    //             outputs: [{ name: '', type: 'uint256' }],
+    //             stateMutability: 'view',
+    //             type: 'function'
+    //         }
+    //     ],
+    //     functionName: 'allowance',
+    //     args: [account.address, nftContractAddress],
+    // })
+
 
     const mintArrowWithHigher = async () => {
-        if (typeof window.ethereum === 'undefined') {
-            return;
+        const chainId = account.chainId
+        if (chainId !== base.id) {
+            // await switchNetwork?.(base.id)
         }
 
-        const currChainId = account.chainId;
-        if (currChainId !== base.id) {
-            // await switchChain(wagmiCoreConfig, { chainId: base.id });
+        // setSidebarMode("loading")
 
-            const walletClient = createWalletClient({
-                chain: base,
-                transport: custom(window.ethereum),
+        try {
+            // Check Higher token balance
+            const balance = await readContract(wagmiCoreConfig as any, {
+                address: higherTokenAddress as any,
+                abi: [{
+                    inputs: [{ name: 'account', type: 'address' }],
+                    name: 'balanceOf',
+                    outputs: [{ name: '', type: 'uint256' }],
+                    stateMutability: 'view',
+                    type: 'function'
+                }],
+                functionName: 'balanceOf',
+                args: [account.address as any],
             })
 
-            await walletClient.switchChain({ id: base.id })
-        }
+            // Check mint price
+            const mintPrice = await readContract(wagmiCoreConfig as any, {
+                address: nftContractAddress as any,
+                abi: higherArrowNftAbi,
+                functionName: 'higherMintPrice',
+            }) as bigint;
 
-        // const contractAddress = ;
-
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-
-        const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
-        const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
-
-        const nftContract = new ethers.Contract(nftContractAddress, higherArrowNftAbi, signer);
-
-        const higherTokenContract = new ethers.Contract(higherTokenAddress, [
-            'function approve(address spender, uint256 amount) public returns (bool)',
-            'function allowance(address owner, address spender) public view returns (uint256)'
-        ], signer);
-
-        // set({ sidebarMode: "loading" });
-        setSidebarMode("loading");
-        try {
-            // Check current allowance
-            // const userAddress = await signer.getAddress();
-            const currentAllowance = await higherTokenContract.allowance(account.address, nftContractAddress);
-            const requiredAmount = ethers.utils.parseUnits("100", 18); // Assuming 18 decimals for Higher token
-
-            // If current allowance is less than required, approve the NFT contract to spend Higher tokens
-            if (currentAllowance.lt(requiredAmount)) {
-                console.log('Approving Higher token spend...');
-                const approvalTx = await higherTokenContract.approve(nftContractAddress, requiredAmount);
-                await approvalTx.wait();
-                console.log('Approval successful');
+            if (balance < mintPrice) {
+                throw new Error(`Insufficient Higher token balance. You need ${formatEther(mintPrice)} HIGHER tokens.`)
             }
 
-            console.log('Minting NFT with Higher token...');
-            const transaction = await nftContract.mintWithHigher(primaryColor, isBGMode, invertMode);
 
-            console.log('Transaction sent. Waiting for confirmation...');
-            const receipt = await transaction.wait();
-
-            const transactionHash = receipt.transactionHash;
-            console.log("🚀 ~ mintArrow: ~ receipt:", receipt)
-            console.log('NFT minted successfully!');
-            console.log('Transaction Hash:', transactionHash);
-
-            const etherscanLink = `https://basescan.org/tx/${transactionHash}`;
-            console.log('Basescan Link:', etherscanLink);
-
-            // Find the Transfer event in the logs
-            const transferLog = receipt.logs.find((log: any) => {
-                try {
-                    const parsedLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(log);
-                    return parsedLog.name === 'Transfer' && parsedLog.args.from === ethers.constants.AddressZero;
-                } catch {
-                    return false;
+            const allowance = await readContract(wagmiCoreConfig as any,
+                {
+                    address: higherTokenAddress as any,
+                    abi: [
+                        {
+                            inputs: [
+                                { name: 'owner', type: 'address' },
+                                { name: 'spender', type: 'address' }
+                            ],
+                            name: 'allowance',
+                            outputs: [{ name: '', type: 'uint256' }],
+                            stateMutability: 'view',
+                            type: 'function'
+                        }
+                    ],
+                    functionName: 'allowance',
+                    args: [account.address as any, nftContractAddress as any],
                 }
-            });
+            )
 
-            if (!transferLog) {
-                throw new Error('No mint Transfer event found in the transaction');
+
+
+
+            console.log("allowance", allowance)
+
+
+            if (allowance < mintPrice) {
+                // Approve Higher tokens
+                const approveHash = await writeContractAsync({
+                    address: higherTokenAddress as any,
+                    abi: [{
+                        inputs: [
+                            { name: 'spender', type: 'address' },
+                            { name: 'amount', type: 'uint256' }
+                        ],
+                        name: 'approve',
+                        outputs: [{ name: '', type: 'bool' }],
+                        stateMutability: 'nonpayable',
+                        type: 'function'
+                    }],
+                    functionName: 'approve',
+                    args: [nftContractAddress as any, mintPrice],
+                })
             }
 
-            // Parse the Transfer event to get the contract address and token ID
-            const parsedTransferLog = new ethers.utils.Interface(higherArrowNftAbi).parseLog(transferLog);
-            const tokenId = parsedTransferLog.args.tokenId;
-            console.log("🚀 ~ mintArrow: ~ tokenId:", tokenId)
+            console.log("🚀 ~ mintArrowWithHigher ~ primaryColor, isBGMode, invertMode:", primaryColor, isBGMode, invertMode)
 
-            // Get the token URI
-            const tokenURI = await nftContract.tokenURI(tokenId);
-            console.log("🚀 ~ mintArrow: ~ tokenURI:", tokenURI)
+            // Mint NFT with Higher tokens
+            const mintHash = await writeContractAsync({
+                address: nftContractAddress as any,
+                abi: higherArrowNftAbi,
+                functionName: 'mintWithHigher',
+                args: [primaryColor, isBGMode, invertMode],
+            })
+            console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
 
-            // fetch the json from the uri
-            const tokenData = await fetch(tokenURI).then(a => a.json());
-            console.log("🚀 ~ mintArrow: ~ tokenData:", tokenData)
 
-            await fetchOwnedArrows(account.address as any);
-            setSidebarMode("success");
+            // await fetchOwnedArrows(address)
+            // setSidebarMode("success")
         } catch (error) {
-            console.error(error);
-            setSidebarMode("mint");
+            console.error(error)
+            setSidebarMode("mint")
 
             toast({
                 variant: "destructive",
                 title: 'Something went wrong.',
-                description: 'Could not mint NFT, please try again later.'
-            });
+                description: (error as any).message || 'Could not mint NFT, please try again later.'
+            })
         }
     }
 

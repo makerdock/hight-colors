@@ -80,7 +80,7 @@ const Home: NextPage = () => {
           }
         </div>
         {!!address && <div
-          className={classNames('md:flex flex-1 md:flex-auto items-stretch rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
+          className={classNames('md:flex flex-1 md:flex-auto items-stretch border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
           )}
         >
           <motion.div

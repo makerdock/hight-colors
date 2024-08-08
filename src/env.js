@@ -22,6 +22,7 @@ export const env = createEnv({
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS: z.string(),
     NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS: z.string(),
     NEXT_PUBLIC_WALLET_CONNECT_KEY: z.string(),
+    NEXT_PUBLIC_GLIDE_PROJECT_ID: z.string(),
   },
 
   /**
@@ -35,6 +36,7 @@ export const env = createEnv({
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
     NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS,
     NEXT_PUBLIC_WALLET_CONNECT_KEY: process.env.NEXT_PUBLIC_WALLET_CONNECT_KEY,
+    NEXT_PUBLIC_GLIDE_PROJECT_ID: process.env.NEXT_PUBLIC_GLIDE_PROJECT_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
