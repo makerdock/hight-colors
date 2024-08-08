@@ -35,7 +35,16 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta property="og:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
+
+
+        {/* <!-- Twitter Meta Tags --> */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="highercolors.com" />
+        <meta property="twitter:url" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
+        <meta name="twitter:title" content="Higher Colors" />
+        <meta name="twitter:description" content="Mint your higher arrow with Base Colors" />
+        <meta name="twitter:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
+
         <meta property="fc:frame" content="vNext" />
         <meta property="fc:frame:image" content={`https://highercolors.com/api/${arrowColor}/${backgroundColor}`} />
         <meta property="fc:frame:image:aspect_ratio" content="1:1" />
