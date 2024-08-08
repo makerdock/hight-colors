@@ -256,7 +256,7 @@ export function PaymentCta() {
     return (
         <>
             <DropdownMenu>
-                <DropdownMenuTrigger className="hover:outline-none focus:outline-none">
+                <DropdownMenuTrigger className="hover:outline-none focus:outline-none w-full sticky bottom-2">
                     <ShineBorder
                         className="text-center text-sm font-bold mb-4 uppercase w-full tracking-widest shadow-lg cursor-pointer"
                         color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
@@ -274,8 +274,6 @@ export function PaymentCta() {
                     >Pay with 100 $HIGHER</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <span className="text-center text-slate-600 text-sm"> 10/ 1000 Mints</span>
-            {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 
     )
