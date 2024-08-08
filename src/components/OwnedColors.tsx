@@ -8,10 +8,10 @@ import { env } from '~/env';
 import useColorStore from '~/stores/useColorStore';
 import { AlchemyResponse } from '~/utils/alchemyResponse';
 import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI';
-import ColorMinter from './ColorMinter';
-import ShineBorder from './magicui/shine-border';
 import Toggle from './Toggle';
 import { PaymentCta } from './PaymentCTA';
+import { wagmiCoreConfig } from '~/utils/rainbowConfig'
+import { readContract } from '@wagmi/core'
 
 interface ColorNFT {
     color: string;
@@ -20,6 +20,8 @@ interface ColorNFT {
 interface OwnedColorsProps {
     onColorSelect: (color: string, isGradient: boolean, isBGMode: boolean, invertMode: boolean) => void;
 }
+
+const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
 
 const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const { address } = useAccount();
@@ -39,6 +41,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     // const [isMinting, setIsMinting] = useState(false);
     // const [transactionHash, setTransactionHash] = useState<string | null>(null);
     // const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
+    const [balance, setBalance] = useState<bigint | null>(null);
 
     useEffect(() => {
         if (address) {
@@ -86,6 +89,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             setIsFetching(false);
         }
     };
+
 
     const isGradientDisabled = ownedColors.length < 2;
 
@@ -136,6 +140,8 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
     const toggleInvert = () => {
         setIsBGMode(!isBGMode)
     };
+
+
 
     const renderColorPickers = () => (
         <>
@@ -233,7 +239,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
             <div className="flex-1 mb-6">
                 <div className="mb-1">
                     <div className="flex justify-start items-center">
-                        <h2 className="text-3xl font-semibold text-black flex-1">Base Colors</h2>
+                        <h2 className="text-xl font-semibold text-black flex-1">Base Colors</h2>
                         <button
                             onClick={handleRefresh}
                             className="text-slate-400 hover:text-slate-800 transition-colors"
