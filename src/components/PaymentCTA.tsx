@@ -322,7 +322,7 @@ export function PaymentCta() {
                     >Pay with 100 $HIGHER</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {renderBalanceMessage()}
+            {/* {renderBalanceMessage()} */}
             <span className=" text-slate-600 text-center text-base font-bold mt-4"> 10/ 1000 Mints</span>
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
