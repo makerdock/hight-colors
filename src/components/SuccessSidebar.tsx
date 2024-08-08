@@ -79,17 +79,15 @@ const SuccessSidebar = () => {
                         <MdOutlineFileDownload className="h-6 w-6" />
                     </Button>
                 </motion.div>
-                <motion.div>
 
-                    <ShineBorder
-                        className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                        color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                        borderWidth={2}
-                    >
-                        <button onClick={handleRefresh}>MINT AGAIN</button>
-                    </ShineBorder>
-                </motion.div>
             </motion.div>
+            <ShineBorder
+                className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                borderWidth={2}
+            >
+                <button onClick={handleRefresh}>MINT AGAIN</button>
+            </ShineBorder>
         </div>
     )
 }
