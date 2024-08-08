@@ -27,6 +27,17 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
+
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content={token.image.thumbnailUrl} />
+        <meta property="og:image" content={token.image.thumbnailUrl} />
+        <meta property="fc:frame:image:aspect_ratio" content="1:1" />
+        <meta property="fc:frame:button:1" content="Check this out" />
+        <meta property="fc:frame:button:1:action" content="link" />
+        <meta property="fc:frame:button:1:target" content={`https://highercolors.com/arrow/${token.tokenId}`} />
+        <meta property="fc:frame:button:2" content="Mint" />
+        <meta property="fc:frame:button:2:action" content="link" />
+        <meta property="fc:frame:button:2:target" content="https://highercolors.com/" />
       </Head>
       <main className="flex-grow flex flex-col lg:flex-row justify-center items-center px-0 relative w-full max-w-4xl mx-auto flex-1 min-h-[100dvh] md:min-h-full">
 

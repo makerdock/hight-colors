@@ -10,7 +10,7 @@ const ShareOptions = (props: { name: string, image: string }) => {
     const tokenId = props.name.split('Color Arrow #')[1]
 
     const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out!`
-    const shareUrl = `https://higher.xyz/nft/${tokenId}` // Replace with actual URL
+    const shareUrl = `https://www.highercolors.com//arrow/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
         // Implement Farcaster sharing logic here
