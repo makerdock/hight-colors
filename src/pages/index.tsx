@@ -70,7 +70,7 @@ const Home: NextPage = () => {
         <title>Higher Colors</title>
         <meta name="description" content="Mint your higher arrow with Base Colors" />
         <link rel="icon" href="/arrow.svg" />
-        <meta property="og:image" content="/og.png" />
+        <meta property="og:image" content="https://www.highercolors.com/og.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
