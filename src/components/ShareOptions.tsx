@@ -1,19 +1,15 @@
-import React from 'react'
-import { extractValuesFromAttributes, listItem } from './SuccessSidebar'
 import { motion } from "framer-motion"
-import { Button } from './ui/button'
-import FarcasterIcon from './icons/FarcasterIcon'
 import { FaXTwitter } from 'react-icons/fa6'
 import { MdCopyAll, MdOutlineFileDownload } from 'react-icons/md'
+import FarcasterIcon from './icons/FarcasterIcon'
+import { listItem } from './SuccessSidebar'
+import { Button } from './ui/button'
 import { toast } from './ui/use-toast'
-import useColorStore from '~/stores/useColorStore'
 
-const ShareOptions = () => {
-    const { mintedNftMetadata } = useColorStore()
+const ShareOptions = (props: { name: string, image: string }) => {
+    const tokenId = props.name.split('Color Arrow #')[1]
 
-    const tokenId = mintedNftMetadata?.name.split('Color Arrow #')[1]
-
-    const shareMessage = `I just minted ${mintedNftMetadata?.name || ''} on Higher! Check it out!`
+    const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out!`
     const shareUrl = `https://higher.xyz/nft/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
@@ -52,8 +48,8 @@ const ShareOptions = () => {
     const handleDownload = () => {
         // Assuming mintedNftMetadata.image is a base64 encoded image
         const link = document.createElement('a')
-        link.href = mintedNftMetadata?.image || ''
-        link.download = `${mintedNftMetadata?.name || ''}.png`
+        link.href = props?.image || ''
+        link.download = `${props?.name || ''}.png`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)

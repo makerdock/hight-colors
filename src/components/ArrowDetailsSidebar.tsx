@@ -1,64 +1,40 @@
-import React from 'react'
-import BlurIn from './magicui/blur-in'
-import { Button } from './ui/button'
-import FarcasterIcon from './icons/FarcasterIcon'
-import { FaXTwitter } from 'react-icons/fa6'
-import { MdCopyAll, MdOutlineFileDownload } from 'react-icons/md'
-import useColorStore from '~/stores/useColorStore'
+import { Nft } from 'alchemy-sdk'
 import { motion } from 'framer-motion'
+import BlurIn, { defaultVariantsForBlurIn } from './magicui/blur-in'
 import ShineBorder from './magicui/shine-border'
 import ShareOptions from './ShareOptions'
+import { extractValuesFromAttributes } from './SuccessSidebar'
+import Link from 'next/link'
+import { formatEthAddress } from '~/utils/formatEthAddress'
 
-export const extractValuesFromAttributes = (attributes: Array<{ trait_type: string, value: string }>) => {
-    const result = {
-        primaryColor: undefined as string | undefined,
-        isBGMode: false,
-        invertMode: false
-    };
 
-    attributes.forEach(attr => {
-        switch (attr.trait_type) {
-            case "Color":
-                result.primaryColor = attr.value;
-                break;
-            case "Background Mode":
-                result.isBGMode = attr.value === "Gradient";
-                break;
-            case "Invert Mode":
-                result.invertMode = attr.value === "True";
-                break;
-        }
-    });
-
-    return result;
-};
-
-export const listItem = {
+const listItem = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     show: { filter: "blur(0px)", opacity: 1 },
 };
 
-const SuccessSidebar = () => {
-    const { mintedNftMetadata } = useColorStore()
-
-    const { primaryColor, isBGMode, invertMode } = extractValuesFromAttributes(mintedNftMetadata?.attributes || []);
-    const name = mintedNftMetadata?.name
+const ArrowDetailsSidebar = (props: { token: Nft, ownerAddress: string }) => {
+    const { token } = props;
+    const { primaryColor, isBGMode, invertMode } = extractValuesFromAttributes(token.raw.metadata?.attributes || []);
+    const name = token?.name
 
     const secondaryColor = invertMode ? 'black' : 'white'
-
-    const handleRefresh = () => {
-        window.location.reload();
-    }
 
     return (
         <div
             className='relative w-full h-full flex items-start flex-col justify-center p-8'
         >
             <BlurIn
+
                 className="text-xl md:text-3xl font-bold text-black dark:text-white text-left text-balance"
             >
-                You have minted {name}
+                {name}
             </BlurIn>
+            <div
+                className="font-display text-md font-medium drop-shadow-sm md:text-md md:leading-[2rem]"
+            >
+                by {formatEthAddress(props.ownerAddress)}
+            </div>
             <motion.div
                 className='space-y-2 flex-1 mt-6'
                 variants={{
@@ -72,7 +48,6 @@ const SuccessSidebar = () => {
                     }
                 }} initial="hidden" animate="show"
             >
-
                 <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
                     <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Primary Color</div>
                     <div className='p-1 px-2 flex items-center justify-start space-x-1 w-24'>
@@ -91,20 +66,19 @@ const SuccessSidebar = () => {
                     <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-5</motion.div>00 uppercase tracking-wider font-bold'>Inverted</div>
                     <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
                 </motion.div>
-                <motion.h3 variants={listItem} className="!mt-8 text-sm uppercase tracking-widest font-bold text-gray-500">Share your high</motion.h3>
-
-                {mintedNftMetadata?.name && mintedNftMetadata?.image && <ShareOptions name={mintedNftMetadata?.name} image={mintedNftMetadata?.image} />}
-
             </motion.div>
-            <ShineBorder
-                className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                borderWidth={2}
-            >
-                <button onClick={handleRefresh}>MINT AGAIN</button>
-            </ShineBorder>
-        </div>
+            <Link className='w-full' href="/">
+                <ShineBorder
+                    className="text-center mt-10 text-sm font-bold uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                    borderWidth={2}
+                >
+                    <span>MINT YOUR OWN</span>
+                </ShineBorder>
+            </Link>
+        </div >
     )
 }
 
-export default SuccessSidebar
+
+export default ArrowDetailsSidebar
