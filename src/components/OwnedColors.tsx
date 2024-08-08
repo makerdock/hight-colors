@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { ethers } from 'ethers';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { env } from '~/env';
 import useColorStore from '~/stores/useColorStore';
 import { AlchemyResponse } from '~/utils/alchemyResponse';
@@ -34,25 +34,11 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         setIsBGMode, invertMode, setInvertMode
     } = useColorStore();
     const [isFetching, setIsFetching] = useState<boolean>(true)
-    // const [isRefreshing, setIsRefreshing] = useState(false);
-    const [colorCheckerContract, setColorCheckerContract] = useState<ethers.Contract | null>(null);
-    // const [activeTab, setActiveTab] = useState<'arrow' | 'background'>('arrow');
-    // const [isInvert, setIsInvert] = useState(false)
-    // const [isMinting, setIsMinting] = useState(false);
-    // const [transactionHash, setTransactionHash] = useState<string | null>(null);
-    // const [etherscanLink, setEtherscanLink] = useState<string | null>(null);
-    const [balance, setBalance] = useState<bigint | null>(null);
+
 
     useEffect(() => {
         if (address) {
             fetchOwnedColors(address);
-        }
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            const contractAddress = '0x7Bc1C072742D8391817EB4Eb2317F98dc72C61dB';
-            const contract = new ethers.Contract(contractAddress, higherArrowNftAbi, signer);
-            setColorCheckerContract(contract);
         }
     }, [address]);
 

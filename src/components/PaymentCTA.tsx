@@ -12,8 +12,8 @@ import {
 } from "./ui/dropdown-menu"
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
 import { getBalance, readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
-import { createWalletClient, custom, decodeEventLog, formatEther } from "viem"
-import { useAccount, useWriteContract } from "wagmi"
+import { createWalletClient, custom, decodeEventLog, formatEther, parseEther } from "viem"
+import { useAccount, useReadContract, useWriteContract } from "wagmi"
 import { base } from 'wagmi/chains'
 import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
@@ -35,6 +35,14 @@ export function PaymentCta() {
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
     const [balance, setBalance] = useState<bigint | null>(null);
+
+
+    const { data: totalSupply = 0, isError, isLoading } = useReadContract({
+        address: nftContractAddress as any,
+        abi: higherArrowNftAbi,
+        functionName: 'totalSupply',
+    })
+    console.log("🚀 ~ PaymentCta ~ totalSupply:", totalSupply)
 
     const getTokenUriFromHash = async (hash: string) => {
 
@@ -352,7 +360,7 @@ export function PaymentCta() {
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
-            <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> 10/ 1000 Mints</span>
+            {totalSupply && <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> {parseInt(totalSupply as any)}/1000 Mints</span>}
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 
