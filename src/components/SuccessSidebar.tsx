@@ -7,16 +7,43 @@ import { MdCopyAll, MdOutlineFileDownload } from 'react-icons/md'
 import useColorStore from '~/stores/useColorStore'
 import { motion } from 'framer-motion'
 import ShineBorder from './magicui/shine-border'
+import ShareOptions from './ShareOptions'
 
-// const container = ;
+export const extractValuesFromAttributes = (attributes: Array<{ trait_type: string, value: string }>) => {
+    const result = {
+        primaryColor: undefined as string | undefined,
+        isBGMode: false,
+        invertMode: false
+    };
 
-const listItem = {
+    attributes.forEach(attr => {
+        switch (attr.trait_type) {
+            case "Color":
+                result.primaryColor = attr.value;
+                break;
+            case "Background Mode":
+                result.isBGMode = attr.value === "Gradient";
+                break;
+            case "Invert Mode":
+                result.invertMode = attr.value === "True";
+                break;
+        }
+    });
+
+    return result;
+};
+
+export const listItem = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     show: { filter: "blur(0px)", opacity: 1 },
 };
 
 const SuccessSidebar = () => {
-    const { primaryColor, isBGMode, invertMode } = useColorStore()
+    const { mintedNftMetadata } = useColorStore()
+
+    const { primaryColor, isBGMode, invertMode } = extractValuesFromAttributes(mintedNftMetadata?.attributes || []);
+    const name = mintedNftMetadata?.name
+
     const secondaryColor = invertMode ? 'black' : 'white'
 
     const handleRefresh = () => {
@@ -30,7 +57,7 @@ const SuccessSidebar = () => {
             <BlurIn
                 className="text-xl md:text-3xl font-bold text-black dark:text-white text-left text-balance"
             >
-                You have minted Arrow #23
+                You have minted {name}
             </BlurIn>
             <motion.div
                 className='space-y-2 flex-1 mt-6'
@@ -65,20 +92,8 @@ const SuccessSidebar = () => {
                     <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
                 </motion.div>
                 <motion.h3 variants={listItem} className="!mt-8 text-sm uppercase tracking-widest font-bold text-gray-500">Share your high</motion.h3>
-                <motion.div variants={listItem} className="flex space-x-2 items-center">
-                    <Button size="icon" variant={"outline"}>
-                        <FarcasterIcon className="h-6 w-6" />
-                    </Button>
-                    <Button size="icon" variant={"outline"}>
-                        <FaXTwitter className="h-6 w-6" />
-                    </Button>
-                    <Button size="icon" variant={"outline"}>
-                        <MdCopyAll className="h-6 w-6" />
-                    </Button>
-                    <Button size="icon" variant={"outline"}>
-                        <MdOutlineFileDownload className="h-6 w-6" />
-                    </Button>
-                </motion.div>
+
+                <ShareOptions />
 
             </motion.div>
             <ShineBorder

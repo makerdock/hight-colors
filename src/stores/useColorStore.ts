@@ -8,6 +8,16 @@ import { ColorArrowNftAbi } from '~/utils/ColorArrowNFTABI'
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
 import { base } from 'wagmi/chains'
 
+type NFTMetadata = {
+    name: string
+    description: string
+    image: string
+    attributes: Array<{
+        trait_type: string
+        value: string
+    }>
+}
+
 interface ColorState {
     primaryColor: string | undefined
     secondaryColor: string | undefined
@@ -31,12 +41,13 @@ interface ColorState {
 
     ownedArrows: OwnedNft[]
     setOwnedArrows: (arrows: OwnedNft[]) => void
-    mintedArrow?: OwnedNft
-    setMintedArrow: (arrow: OwnedNft) => void
 
     fetchOwnedArrows: (address: string) => Promise<void>
     isFetchingOwnedArrows: boolean
     setIsFetchingOwnedArrows: (isFetching: boolean) => void
+
+    mintedNftMetadata?: NFTMetadata
+    setMintedNftMetadata: (metadata: NFTMetadata) => void
 }
 
 export const useColorStore = create<ColorState>((set, get) => ({
@@ -56,9 +67,7 @@ export const useColorStore = create<ColorState>((set, get) => ({
     setIsGradientMode: (isGradient) => set({ isGradientMode: isGradient }),
     setIsBGMode: (isBG) => set({ isBGMode: isBG }),
     setInvertMode: (invert) => set({ invertMode: invert }),
-
-    mintedArrow: undefined,
-    setMintedArrow: (arrow) => set({ mintedArrow: arrow }),
+    setMintedNftMetadata: (metadata) => set({ mintedNftMetadata: metadata }),
     ownedArrows: [],
     setOwnedArrows: (arrows) => set({ ownedArrows: arrows }),
     setIsFetchingOwnedArrows: (isFetching) => set({ isFetchingOwnedArrows: isFetching }),

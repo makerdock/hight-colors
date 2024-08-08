@@ -28,7 +28,8 @@ export function PaymentCta() {
         mintError,
         primaryColor, isBGMode, invertMode,
         setSidebarMode,
-        fetchOwnedArrows
+        fetchOwnedArrows,
+        setMintedNftMetadata
     } = useColorStore();
     const { writeContractAsync } = useWriteContract()
     const account = useAccount()
@@ -183,7 +184,8 @@ export function PaymentCta() {
             console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
 
 
-            await getTokenUriFromHash(mintHash)
+            const tokenDataRes = await getTokenUriFromHash(mintHash)
+            setMintedNftMetadata(tokenDataRes.tokenData)
 
             await fetchOwnedArrows(account.address as any)
             setSidebarMode("success")
@@ -232,13 +234,8 @@ export function PaymentCta() {
                 throw new Error('Transaction failed');
             }
 
-            const receipt = await waitForTransactionReceipt(wagmiCoreConfig as any, { hash });
-            console.log("🚀 ~ mintArrow ~ receipt:", receipt)
-            console.log('NFT minted successfully!');
-            console.log('Transaction Hash:', receipt.transactionHash);
-
-            const etherscanLink = `https://basescan.org/tx/${receipt.transactionHash}`;
-            console.log('Basescan Link:', etherscanLink);
+            const tokenDataRes = await getTokenUriFromHash(hash)
+            setMintedNftMetadata(tokenDataRes.tokenData)
 
             await fetchOwnedArrows(account.address as any);
             setSidebarMode("success");
