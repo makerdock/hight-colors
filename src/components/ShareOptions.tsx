@@ -10,16 +10,16 @@ const ShareOptions = (props: { name: string, image: string }) => {
     const tokenId = props.name.split('Color Arrow #')[1]
 
     const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out!`
-    const shareUrl = `https://www.highercolors.com//arrow/${tokenId}` // Replace with actual URL
+    const shareUrl = `https://www.highercolors.com/arrow/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
-        // Implement Farcaster sharing logic here
-        // This might involve opening a new window or redirecting to Farcaster with pre-filled content
-        console.log('Sharing to Farcaster:', shareMessage, shareUrl)
-        toast({
-            title: 'Sharing to Farcaster',
-            description: 'Opening Farcaster to share your NFT...',
-        })
+        const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareMessage)}&embeds[]=${encodeURIComponent(shareUrl)}`;
+        window.open(warpcastUrl, '_blank');
+        console.log('Sharing to Farcaster:', shareMessage, shareUrl);
+        // toast({
+        //     title: 'Sharing to Farcaster',
+        //     description: 'Opening Farcaster to share your NFT...',
+        // })
     }
 
     const handleTwitterShare = () => {
