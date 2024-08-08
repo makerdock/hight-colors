@@ -353,7 +353,7 @@ export function PaymentCta() {
                 <DropdownMenuContent>
                     <DropdownMenuItem
                         onClick={mintArrow}
-                    >Pay with 0.0004 Eth</DropdownMenuItem>
+                    >Pay with 0.00054 Eth</DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={mintArrowWithHigher}
                     >Pay with 200 $HIGHER</DropdownMenuItem>
