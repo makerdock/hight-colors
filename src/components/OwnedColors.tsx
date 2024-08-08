@@ -175,7 +175,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     href="https://www.basecolors.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className='text-sm text-slate-600 	text-decoration-line '
+                    className='text-sm text-slate-600 underline'
                 >
                     Get more Base Colors
                 </a>
@@ -232,7 +232,7 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
         <div className="p-4 md:p-8 bg-white md:min-h-full min-h-max flex flex-col w-full">
             <div className="flex-1 mb-6">
                 <div className="mb-1">
-                    <div className="flex justify-start  items-center">
+                    <div className="flex justify-start items-center">
                         <h2 className="text-3xl font-semibold text-black flex-1">Base Colors</h2>
                         <button
                             onClick={handleRefresh}
