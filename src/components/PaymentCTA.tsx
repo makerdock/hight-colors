@@ -54,6 +54,7 @@ export function PaymentCta() {
 
         // Find the Transfer event in the logs
         const transferLog = receipt.logs.find((log) => {
+
             try {
                 const event = decodeEventLog({
                     abi: higherArrowNftAbi,
@@ -358,15 +359,15 @@ export function PaymentCta() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem
-                        onClick={mintArrow}
-                    >Pay with 0.00054 Eth</DropdownMenuItem>
-                    <DropdownMenuItem
                         onClick={mintArrowWithHigher}
-                    >Pay with 200 $HIGHER</DropdownMenuItem>
+                    >Pay with 100 $HIGHER</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={mintArrow}
+                    >Pay with ✧ 250</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
-            {!!totalSupply && <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> {parseInt(totalSupply as any)}/1000 Mints</span>}
+            {!isLoading && <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> {parseInt(totalSupply as any)}/1000 Mints</span>}
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 

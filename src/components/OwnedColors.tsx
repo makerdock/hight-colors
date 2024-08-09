@@ -129,10 +129,14 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
 
     const renderColorPickers = () => (
         <>
-            <div className="relative h-20 md:h-40">
+            <div className={classNames("relative", ownedColors.length > 8 && 'h-20 md:h-40')}>
                 {ownedColors.length > 8 &&
                     <div className="absolute bottom-0 w-full h-10 left-0 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>}
-                <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1 h-20 md:h-40 overflow-y-scroll p-1 relative pb-4">
+
+                <div className={classNames(
+                    "grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1 p-1 relative",
+                    ownedColors.length > 8 && 'h-20 md:h-40 overflow-y-scroll pb-6'
+                )}>
                     {ownedColors.map((nft, index) => (
                         <div
                             key={index}
@@ -187,6 +191,10 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     </p>
                 </div>
                 {renderColorPickers()}
+
+                <a href='' target="_blank"
+                    rel="noopener noreferrer" className="text-gray-500 text-xs underline"> Get more Base Colors</a>
+
                 <div className="flex justify-start items-center mt-4">
                     <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>
                     <Toggle isOn={isBGMode} onToggle={toggleInvert} />

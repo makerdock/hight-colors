@@ -58,6 +58,9 @@ const ShareOptions = (props: { name: string, image: string }) => {
             description: 'Your NFT image is being downloaded.',
         })
     }
+
+    const openSeaUrl = "https://opensea.io";
+
     return (
         <motion.div variants={listItem} className="flex space-x-2 items-center">
             <Button size="icon" variant={"outline"} onClick={handleFarcasterShare}>
@@ -65,6 +68,15 @@ const ShareOptions = (props: { name: string, image: string }) => {
             </Button>
             <Button size="icon" variant={"outline"} onClick={handleTwitterShare}>
                 <FaXTwitter className="h-6 w-6" />
+            </Button>
+            <Button size="icon" variant={"outline"}>
+                <a
+                    href={openSeaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <img className="w-6 h-auto object-contain" src="/Logomark.svg" alt="OpenSea logo" />
+                </a>
             </Button>
             <Button size="icon" variant={"outline"} onClick={handleCopyShare}>
                 <MdCopyAll className="h-6 w-6" />
