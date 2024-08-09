@@ -17,5 +17,5 @@ export function getArrowColors({ primaryColor, bgMode, invertMode }: ArrowColorP
     // Determine arrow color
     const arrowColor = bgMode ? contrastColor : effectivePrimaryColor;
 
-    return { backgroundColor: arrowColor.replace('#', ''), arrowColor: backgroundColor.replace('#', '') };
+    return { backgroundColor: backgroundColor.replace('#', ''), arrowColor: arrowColor.replace('#', '') };
 }
