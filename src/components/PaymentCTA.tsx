@@ -360,10 +360,10 @@ export function PaymentCta() {
                 <DropdownMenuContent>
                     <DropdownMenuItem
                         onClick={mintArrowWithHigher}
-                    >Pay with 100 $HIGHER</DropdownMenuItem>
+                    >Pay with 150 $HIGHER</DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={mintArrow}
-                    >Pay with ✧ 250</DropdownMenuItem>
+                    >Pay with ✧ 350</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
