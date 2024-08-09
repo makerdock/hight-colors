@@ -63,7 +63,7 @@ const ArrowDetailsSidebar = (props: { token: Nft, ownerAddress: string }) => {
                     </div>
                 </motion.div>
                 <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
-                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-5</motion.div>00 uppercase tracking-wider font-bold'>Inverted</div>
+                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Inverted</div>
                     <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
                 </motion.div>
             </motion.div>

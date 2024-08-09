@@ -129,23 +129,26 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
 
     const renderColorPickers = () => (
         <>
-            <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1">
-                {ownedColors.map((nft, index) => (
-                    <div
-                        key={index}
-                        className={classNames(
-                            "w-full aspect-square rounded cursor-pointer",
-                            [primaryColor, secondaryColor].includes(nft.color) && "ring-2 ring-black/20 ring-offset-2"
+            <div className="relative h-20 md:h-40">
+                {ownedColors.length > 8 &&
+                    <div className="absolute bottom-0 w-full h-10 left-0 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>}
+                <div className="grid md:grid-cols-4 xs:grid-cols-8 grid-cols-6 gap-3 gap-y-4 my-2 py-1 h-20 md:h-40 overflow-y-scroll p-1 relative pb-4">
+                    {ownedColors.map((nft, index) => (
+                        <div
+                            key={index}
+                            className={classNames(
+                                "w-full aspect-square rounded cursor-pointer",
+                                [primaryColor, secondaryColor].includes(nft.color) && "ring-2 ring-black/20 ring-offset-2"
 
-                        )}
-                        style={{ backgroundColor: nft.color }}
-                        title={nft.color}
-                        onClick={() => handleColorBoxClick(nft.color)}
-                    ></div>
-                ))}
+                            )}
+                            style={{ backgroundColor: nft.color }}
+                            title={nft.color}
+                            onClick={() => handleColorBoxClick(nft.color)}
+                        ></div>
+                    ))}
 
-                {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div key={index} className='animate-pulse bg-slate-200 aspect-square rounded' />)}
-                {/* <AnimatePresence>
+                    {isFetching && !ownedColors.length && new Array(3).fill(null).map((_, index) => <div key={index} className='animate-pulse bg-slate-200 aspect-square rounded' />)}
+                    {/* <AnimatePresence>
                     {!isFetching && <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: 'auto' }}
@@ -157,62 +160,9 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                                 address && fetchOwnedColors(address)
                             }}
                             colorCheckerContract={colorCheckerContract} /> */}
-                {/* </motion.div>}
+                    {/* </motion.div>}
                 </AnimatePresence> */}
-            </div>
-            <span className='text-sm text-slate-600'>
-                <a
-                    href="https://www.basecolors.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className='text-sm text-slate-600 underline'
-                >
-                    Get more Base Colors
-                </a>
-            </span>
-            {/* {ownedColors.length > 1 && <>
-                <div>
-                    <div className="flex justify-start items-center mt-4">
-                        <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Gradient</h2>
-                        <Toggle isOn={isGradientMode} onToggle={toggleGradientMode} disabled={isGradientDisabled} />
-                    </div>
-                    {isGradientMode && !isGradientDisabled && <p className="text-slate-400 transition-all duration-300 ease-in-out text-xs">Click on two colors above to make a gradient</p>}
-                    {isGradientDisabled && (
-                        <p className="text-red-500 text-xs mt-1">Get more colors to try gradient</p>
-                    )}
                 </div>
-                {isGradientMode && <div
-                    style={{
-                        background: secondaryColor
-                            ? `linear-gradient(to right, ${primaryColor || '#ffffff'}, ${secondaryColor})`
-                            : primaryColor || '#ffffff',
-                    }}
-                    className={classNames(
-                        'h-1 mt-1 rounded-xl transition-all duration-300 ease-in-out',
-                        isGradientMode ? 'opacity-100 max-w-full' : 'opacity-0 max-w-0',
-                        (primaryColor && secondaryColor) ? 'w-full' : 'w-0'
-                    )}
-                />}
-            </>} */}
-
-            <div className="flex justify-start items-center mt-4">
-                <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>
-                <Toggle isOn={isBGMode} onToggle={toggleInvert} />
-            </div>
-            <div className=' grid grid-cols-2 gap-2 h-8 mt-4'>
-                {['#ffffff', '#000000'].map((color, index) => (
-                    <div
-                        key={index}
-                        className={classNames(
-                            "w-full rounded cursor-pointer border border-slate-300",
-                            (!invertMode && color === '#ffffff' || !!invertMode && color === '#000000') && "ring-2 ring-black/40 ring-offset-2"
-
-                        )}
-                        style={{ backgroundColor: color }}
-                        title={color}
-                        onClick={() => setInvertMode(color !== '#ffffff')}
-                    ></div>
-                ))}
             </div>
         </>
     );
@@ -233,10 +183,29 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                         </button>
                     </div>
                     <p className='text-sm text-slate-600'>
-                        Mint your own Higher Arrow NFTs with the colors you own
+                        Mint your own Higher Arrows with the colors you own
                     </p>
                 </div>
                 {renderColorPickers()}
+                <div className="flex justify-start items-center mt-4">
+                    <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>
+                    <Toggle isOn={isBGMode} onToggle={toggleInvert} />
+                </div>
+                <div className=' grid grid-cols-2 gap-2 h-8 mt-4'>
+                    {['#ffffff', '#000000'].map((color, index) => (
+                        <div
+                            key={index}
+                            className={classNames(
+                                "w-full rounded cursor-pointer border border-slate-300",
+                                (!invertMode && color === '#ffffff' || !!invertMode && color === '#000000') && "ring-2 ring-black/40 ring-offset-2"
+
+                            )}
+                            style={{ backgroundColor: color }}
+                            title={color}
+                            onClick={() => setInvertMode(color !== '#ffffff')}
+                        ></div>
+                    ))}
+                </div>
             </div>
             <div className="sticky bottom-0 flex-col items-stretch">
                 <PaymentCta />

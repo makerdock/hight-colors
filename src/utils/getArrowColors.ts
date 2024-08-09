@@ -6,7 +6,7 @@ interface ArrowColorProps {
 
 export function getArrowColors({ primaryColor, bgMode, invertMode }: ArrowColorProps): { arrowColor: string; backgroundColor: string } {
     // Determine the contrast color (black or white)
-    const contrastColor = invertMode ? 'black' : 'white';
+    const contrastColor = invertMode ? '000000' : 'FFFFFF';
 
     // If primaryColor is not provided, default to the contrast color
     const effectivePrimaryColor = primaryColor || contrastColor;
@@ -17,5 +17,5 @@ export function getArrowColors({ primaryColor, bgMode, invertMode }: ArrowColorP
     // Determine arrow color
     const arrowColor = bgMode ? contrastColor : effectivePrimaryColor;
 
-    return { arrowColor: arrowColor.replace('#', ''), backgroundColor: backgroundColor.replace('#', '') };
+    return { backgroundColor: arrowColor.replace('#', ''), arrowColor: backgroundColor.replace('#', '') };
 }
