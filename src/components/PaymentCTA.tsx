@@ -11,14 +11,16 @@ import {
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
+import { chains, createSession, currencies, executeSession } from "@paywithglide/glide-js"
 import { getBalance, readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
-import { createWalletClient, custom, decodeEventLog, formatEther, parseEther } from "viem"
-import { useAccount, useReadContract, useWriteContract } from "wagmi"
+import { useEffect, useState } from "react"
+import { createWalletClient, custom, decodeEventLog, formatEther } from "viem"
+import { useAccount, useChainId, useReadContract, useSendTransaction, useSignTypedData, useSwitchChain, useWriteContract } from "wagmi"
 import { base } from 'wagmi/chains'
 import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
+import { glideConfig } from "~/utils/glideConfig"
 import { toast } from "./ui/use-toast"
-import { useEffect, useState } from "react"
 
 const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
 const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
@@ -43,6 +45,12 @@ export function PaymentCta() {
         functionName: 'totalSupply',
     })
     console.log("🚀 ~ PaymentCta ~ totalSupply:", totalSupply)
+
+    const currentChainId = useChainId();
+    const { switchChainAsync } = useSwitchChain();
+    const { sendTransactionAsync } = useSendTransaction();
+    const { signTypedDataAsync } = useSignTypedData();
+
 
     const getTokenUriFromHash = async (hash: string) => {
 
@@ -103,120 +111,157 @@ export function PaymentCta() {
     }
 
     const mintArrowWithHigher = async () => {
-        const chainId = account.chainId
-        if (chainId !== base.id) {
-            // await switchNetwork?.(base.id)
-        }
-
-        setSidebarMode("loading")
-
         try {
-            // Check Higher token balance
-            const balance = await readContract(wagmiCoreConfig as any, {
-                address: higherTokenAddress as any,
-                abi: [{
-                    inputs: [{ name: 'account', type: 'address' }],
-                    name: 'balanceOf',
-                    outputs: [{ name: '', type: 'uint256' }],
-                    stateMutability: 'view',
-                    type: 'function'
-                }],
-                functionName: 'balanceOf',
-                args: [account.address as any],
-            })
+            const session = await createSession(glideConfig, {
+                account: account.address,
 
-            // Check mint price
-            const mintPrice = await readContract(wagmiCoreConfig as any, {
-                address: nftContractAddress as any,
+                // Optional. Setting this restricts the user to only
+                // pay with the specified currency.
+                paymentCurrency: currencies.higher.on(base),
+                preferGaslessPayment: true,
+
+                chainId: chains.base.id,
+                address: env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS as any,
                 abi: higherArrowNftAbi,
-                functionName: 'higherMintPrice',
-            }) as bigint;
+                functionName: "mint",
+                args: [account.address, 999999907200n],
+                value: 999999907200n,
+            });
 
-            if (balance < mintPrice) {
-                throw new Error(`Insufficient Higher token balance. You need ${formatEther(mintPrice)} HIGHER tokens.`)
-            }
+            const transactionHash = await executeSession(glideConfig, {
+                session,
+                currentChainId: currentChainId as any,
+                switchChainAsync,
+                sendTransactionAsync,
+                signTypedDataAsync,
+            });
 
+            const tokenDataRes = await getTokenUriFromHash(transactionHash.sponsoredTransactionHash)
 
-            const allowance = await readContract(wagmiCoreConfig as any,
-                {
-                    address: higherTokenAddress as any,
-                    abi: [
-                        {
-                            inputs: [
-                                { name: 'owner', type: 'address' },
-                                { name: 'spender', type: 'address' }
-                            ],
-                            name: 'allowance',
-                            outputs: [{ name: '', type: 'uint256' }],
-                            stateMutability: 'view',
-                            type: 'function'
-                        }
-                    ],
-                    functionName: 'allowance',
-                    args: [account.address as any, nftContractAddress as any],
-                }
-            )
-
-
-
-
-            console.log("allowance", allowance)
-
-
-            if (allowance < mintPrice) {
-                // Approve Higher tokens
-                const approveHash = await writeContractAsync({
-                    address: higherTokenAddress as any,
-                    abi: [{
-                        inputs: [
-                            { name: 'spender', type: 'address' },
-                            { name: 'amount', type: 'uint256' }
-                        ],
-                        name: 'approve',
-                        outputs: [{ name: '', type: 'bool' }],
-                        stateMutability: 'nonpayable',
-                        type: 'function'
-                    }],
-                    functionName: 'approve',
-                    args: [nftContractAddress as any, mintPrice],
-                })
-                await new Promise((resolve) => setTimeout(resolve, 5000))
-
-            }
-
-            console.log("🚀 ~ mintArrowWithHigher ~ primaryColor, isBGMode, invertMode:", primaryColor, isBGMode, invertMode)
-
-            // delay for 1s
-
-            const { request } = await simulateContract(wagmiCoreConfig as any, {
-                address: nftContractAddress as any,
-                abi: higherArrowNftAbi,
-                functionName: 'mintWithHigher',
-                args: [primaryColor, isBGMode, invertMode],
-                gas: 2000000n
-            })
-
-            // Mint NFT with Higher tokens
-            const mintHash = await writeContractAsync(request)
-            console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
-
-
-            const tokenDataRes = await getTokenUriFromHash(mintHash)
             setMintedNftMetadata(tokenDataRes.tokenData)
 
-            await fetchOwnedArrows(account.address as any)
-            setSidebarMode("success")
+            await fetchOwnedArrows(account.address as any);
+            setSidebarMode("success");
         } catch (error) {
-            console.error(error)
-            setSidebarMode("mint")
-
-            toast({
-                variant: "destructive",
-                title: 'Something went wrong.',
-                description: (error as any).message || 'Could not mint NFT, please try again later.'
-            })
+            console.error('Error minting with $HIGHER:', error);
         }
     }
+
+    // const mintArrowWithHigher = async () => {
+    //     const chainId = account.chainId
+    //     if (chainId !== base.id) {
+    //         // await switchNetwork?.(base.id)
+    //     }
+
+    //     setSidebarMode("loading")
+
+    //     try {
+    //         // Check Higher token balance
+    //         const balance = await readContract(wagmiCoreConfig as any, {
+    //             address: higherTokenAddress as any,
+    //             abi: [{
+    //                 inputs: [{ name: 'account', type: 'address' }],
+    //                 name: 'balanceOf',
+    //                 outputs: [{ name: '', type: 'uint256' }],
+    //                 stateMutability: 'view',
+    //                 type: 'function'
+    //             }],
+    //             functionName: 'balanceOf',
+    //             args: [account.address as any],
+    //         })
+
+    //         // Check mint price
+    //         const mintPrice = await readContract(wagmiCoreConfig as any, {
+    //             address: nftContractAddress as any,
+    //             abi: higherArrowNftAbi,
+    //             functionName: 'higherMintPrice',
+    //         }) as bigint;
+
+    //         if (balance < mintPrice) {
+    //             throw new Error(`Insufficient Higher token balance. You need ${formatEther(mintPrice)} HIGHER tokens.`)
+    //         }
+
+
+    //         const allowance = await readContract(wagmiCoreConfig as any,
+    //             {
+    //                 address: higherTokenAddress as any,
+    //                 abi: [
+    //                     {
+    //                         inputs: [
+    //                             { name: 'owner', type: 'address' },
+    //                             { name: 'spender', type: 'address' }
+    //                         ],
+    //                         name: 'allowance',
+    //                         outputs: [{ name: '', type: 'uint256' }],
+    //                         stateMutability: 'view',
+    //                         type: 'function'
+    //                     }
+    //                 ],
+    //                 functionName: 'allowance',
+    //                 args: [account.address as any, nftContractAddress as any],
+    //             }
+    //         )
+
+
+
+
+    //         console.log("allowance", allowance)
+
+
+    //         if (allowance < mintPrice) {
+    //             // Approve Higher tokens
+    //             const approveHash = await writeContractAsync({
+    //                 address: higherTokenAddress as any,
+    //                 abi: [{
+    //                     inputs: [
+    //                         { name: 'spender', type: 'address' },
+    //                         { name: 'amount', type: 'uint256' }
+    //                     ],
+    //                     name: 'approve',
+    //                     outputs: [{ name: '', type: 'bool' }],
+    //                     stateMutability: 'nonpayable',
+    //                     type: 'function'
+    //                 }],
+    //                 functionName: 'approve',
+    //                 args: [nftContractAddress as any, mintPrice],
+    //             })
+    //             await new Promise((resolve) => setTimeout(resolve, 5000))
+
+    //         }
+
+    //         console.log("🚀 ~ mintArrowWithHigher ~ primaryColor, isBGMode, invertMode:", primaryColor, isBGMode, invertMode)
+
+    //         // delay for 1s
+
+    //         const { request } = await simulateContract(wagmiCoreConfig as any, {
+    //             address: nftContractAddress as any,
+    //             abi: higherArrowNftAbi,
+    //             functionName: 'mintWithHigher',
+    //             args: [primaryColor, isBGMode, invertMode],
+    //             gas: 2000000n
+    //         })
+
+    //         // Mint NFT with Higher tokens
+    //         const mintHash = await writeContractAsync(request)
+    //         console.log("🚀 ~ mintArrowWithHigher ~ mintHash:", mintHash)
+
+
+    //         const tokenDataRes = await getTokenUriFromHash(mintHash)
+    //         setMintedNftMetadata(tokenDataRes.tokenData)
+
+    //         await fetchOwnedArrows(account.address as any)
+    //         setSidebarMode("success")
+    //     } catch (error) {
+    //         console.error(error)
+    //         setSidebarMode("mint")
+
+    //         toast({
+    //             variant: "destructive",
+    //             title: 'Something went wrong.',
+    //             description: (error as any).message || 'Could not mint NFT, please try again later.'
+    //         })
+    //     }
+    // }
 
 
     const mintArrow = async () => {
