@@ -120,7 +120,7 @@ const Home: NextPage = () => {
             animate={{ x: "0%", }}
             transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.5 }}
             exit={{ x: '100%' }}
-            className="lg:mt-0 md:border-l-1 flex md:block border-t-2 md:border-t-0 border-black/20 md:min-w-[300px] border-l border-slate-200 md:h-full h-full overflow-y-scroll overflow-x-hidden relative flex-1"
+            className="lg:mt-0 md:border-l-1 flex md:block border-t-2 md:border-t-0 border-black/20 md:min-w-[300px] border-l border-slate-200 md:min-h-full min-h-full overflow-y-scroll overflow-x-hidden relative flex-1"
           >
             <AnimatePresence
               initial={false}
@@ -130,7 +130,7 @@ const Home: NextPage = () => {
                   key="mint"
                   initial={{ opacity: '0%' }}
                   animate={{ opacity: "100%" }}
-                  className='w-full h-full md:max-h-max max-h-[80dvh] overflow-hidden'
+                  className='w-full h-full md:max-h-max max-h-full overflow-hidden'
                 >
                   <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
