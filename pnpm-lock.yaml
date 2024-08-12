@@ -8,8 +8,8 @@ dependencies:
     specifier: ^2.1.5
     version: 2.1.5(react@18.3.1)
   '@paywithglide/glide-js':
-    specifier: ^0.9.11
-    version: 0.9.11(typescript@5.5.4)(zod@3.23.8)
+    specifier: ^0.9.12
+    version: 0.9.12(typescript@5.5.4)(zod@3.23.8)
   '@radix-ui/react-dropdown-menu':
     specifier: ^2.1.1
     version: 2.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
@@ -2982,8 +2982,8 @@ packages:
       '@parcel/watcher-win32-x64': 2.4.1
     dev: false
 
-  /@paywithglide/glide-js@0.9.11(typescript@5.5.4)(zod@3.23.8):
-    resolution: {integrity: sha512-VSuApBapTfUvujAJ9MIoDhg51nW0N3AJp25lFPcKfSNNFOA3GObYVRrZFNd4NBahnftfhPQCghbSHNA3LjS8AA==}
+  /@paywithglide/glide-js@0.9.12(typescript@5.5.4)(zod@3.23.8):
+    resolution: {integrity: sha512-T1UzDpxakd+1Zmvp+DY8nXlK1x7dgom3hF6PaULBBE0/GRu2CDNs54H7J7q+srphhjp7egdm+3yVidDrvjLZlw==}
     dependencies:
       viem: 2.18.4(typescript@5.5.4)(zod@3.23.8)
     transitivePeerDependencies:
