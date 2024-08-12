@@ -21,6 +21,7 @@ import { env } from "~/env"
 import { higherArrowNftAbi } from "~/utils/abi"
 import { glideConfig } from "~/utils/glideConfig"
 import { toast } from "./ui/use-toast"
+import CountdownTimer from "./CountdownTimer"
 
 const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
 const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
@@ -413,17 +414,27 @@ export function PaymentCta() {
                 onClick={mintArrow}
             >
                 <ShineBorder
-                    className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                    className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer flex justify-center items-center space-x-1"
                     color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
                     borderWidth={2}
                 >
-                    <span>Mint for 350</span>
+                    <span>Mint for $0.99 (</span>
+
+                    <svg className="h-3 w-3" viewBox="0 0 1001 1001" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1000.59 461.042L945.047 447.301C752.139 399.579 601.533 248.953 553.811 56.0654L540.071 0.523193H461.107L447.367 56.0654C399.645 248.973 249.019 399.579 56.1311 447.301L0.588837 461.042V540.005L56.1311 553.745C249.039 601.467 399.645 752.093 447.367 944.981L461.107 1000.52H540.071L553.811 944.981C601.533 752.073 752.159 601.467 945.047 553.745L1000.59 540.005V461.042ZM765.439 516.784C635.974 534.085 534.13 635.929 516.83 765.394L500.569 887.119L484.308 765.394C467.008 635.929 365.163 534.085 235.698 516.784L113.973 500.523L235.698 484.263C365.163 466.962 467.008 365.118 484.308 235.653L500.569 113.928L516.83 235.653C534.13 365.118 635.974 466.962 765.439 484.263L887.164 500.523L765.439 516.784Z" fill="black" />
+                    </svg>
+
+                    <span>350 )</span>
                 </ShineBorder>
             </div>
             {/* {renderBalanceMessage()} */}
-            {!isLoading && <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> {parseInt(totalSupply as any)}/1000 Mints</span>}
+            <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4">
+                {/* {parseInt(totalSupply as any)}/1000 Mints */}
+                <CountdownTimer targetDate={'2024-08-17T19:00:00'} />
+            </span>
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
+
 
     )
 }

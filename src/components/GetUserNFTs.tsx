@@ -1,5 +1,6 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { motion } from "framer-motion";
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAccount, } from 'wagmi';
 import { env } from '~/env';
@@ -55,22 +56,24 @@ const GetUserNFTsWithMetadata = () => {
             </div>
             <div className='flex justify-center space-x-2'>
                 {nfts?.map(({ tokenId, image }) => (
-                    <motion.div
-                        key={tokenId}
-                        initial={{ y: 60 }}
-                        animate={{ y: 60 }}
-                        whileHover={{ y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="cursor-pointer relative group"
-                    >
-                        <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            Arrow #{tokenId}
-                        </span>
-                        <img
-                            className="h-24 aspect-square rounded-lg shadow-xl"
-                            src={image.pngUrl}
-                        />
-                    </motion.div>
+                    <Link href={`/arrow/${tokenId}`}>
+                        <motion.div
+                            key={tokenId}
+                            initial={{ y: 60 }}
+                            animate={{ y: 60 }}
+                            whileHover={{ y: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="cursor-pointer relative group"
+                        >
+                            <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                Arrow #{tokenId}
+                            </span>
+                            <img
+                                className="h-24 aspect-square rounded-lg shadow-xl bg-white"
+                                src={image.pngUrl}
+                            />
+                        </motion.div>
+                    </Link>
                 ))}
             </div>
         </div>
