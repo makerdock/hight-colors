@@ -288,7 +288,7 @@ export function PaymentCta() {
 
             const walletClient = createWalletClient({
                 chain: base,
-                transport: custom(window.ethereum),
+                transport: custom((window as any).ethereum),
             })
 
             await walletClient.switchChain({ id: base.id })
@@ -298,7 +298,7 @@ export function PaymentCta() {
         const mintPrice = await readContract(wagmiCoreConfig as any, {
             address: nftContractAddress as any,
             abi: higherArrowNftAbi,
-            functionName: 'ethMintPrice',
+            functionName: 'mintPrice',
         }) as bigint
 
         const ethMintPriceInEth = formatEther(mintPrice)
@@ -330,7 +330,7 @@ export function PaymentCta() {
             console.log("🚀 ~ mintArrow: ~ contractAddress:", contractAddress)
             const { request } = await simulateContract(wagmiCoreConfig as any, {
                 address: contractAddress as any,
-                functionName: 'mintWithEth',
+                functionName: 'mint',
                 abi: higherArrowNftAbi,
                 args: [primaryColor, isBGMode, invertMode],
                 value: mintPrice,
@@ -386,22 +386,22 @@ export function PaymentCta() {
         return balanceBigInt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    const renderBalanceMessage = () => {
-        if (balance === null) {
-            return;
-        }
+    // const renderBalanceMessage = () => {
+    //     if (balance === null) {
+    //         return;
+    //     }
 
-        if (balance < BigInt(100)) {
-            return (
-                <div className='text-center items-center'>
-                    <p className='text-xs text-slate-600 text-center'>Your Balance: {formatBalance(balance)} $Higher</p>
-                    <p className='text-xs text-slate-600 text-center'> <a href="https://www.buysomehigher.com/" target="_blank"
-                        rel="noopener noreferrer" className="text-blue-500 hover:underline">Feeling low? Get Higher</a></p>
-                </div>
-            );
-        }
-        return <p className='text-xs text-slate-600'>Your Balance: {formatBalance(balance)} $Higher</p>;
-    };
+    //     if (balance < BigInt(100)) {
+    //         return (
+    //             <div className='text-center items-center'>
+    //                 <p className='text-xs text-slate-600 text-center'>Your Balance: {formatBalance(balance)} $Higher</p>
+    //                 <p className='text-xs text-slate-600 text-center'> <a href="https://www.buysomehigher.com/" target="_blank"
+    //                     rel="noopener noreferrer" className="text-blue-500 hover:underline">Feeling low? Get Higher</a></p>
+    //             </div>
+    //         );
+    //     }
+    //     return <p className='text-xs text-slate-600'>Your Balance: {formatBalance(balance)} $Higher</p>;
+    // };
 
     useEffect(() => {
         higherBalance(account.address);
@@ -409,25 +409,17 @@ export function PaymentCta() {
 
     return (
         <>
-            <DropdownMenu>
-                <DropdownMenuTrigger className="hover:outline-none focus:outline-none w-full sticky bottom-2">
-                    <ShineBorder
-                        className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer"
-                        color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                        borderWidth={2}
-                    >
-                        <span>Mint for $1.00</span>
-                    </ShineBorder>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem
-                        onClick={mintArrowWithHigher}
-                    >150 $HIGHER</DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={mintArrow}
-                    >✧ 350 (0.00035 ETH)</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div
+                onClick={mintArrow}
+            >
+                <ShineBorder
+                    className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer"
+                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+                    borderWidth={2}
+                >
+                    <span>Mint for 350</span>
+                </ShineBorder>
+            </div>
             {/* {renderBalanceMessage()} */}
             {!isLoading && <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4"> {parseInt(totalSupply as any)}/1000 Mints</span>}
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
