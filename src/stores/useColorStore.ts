@@ -1,11 +1,8 @@
-import { ethers } from 'ethers'
 import { create } from 'zustand'
 import { toast } from '~/components/ui/use-toast'
 import { env } from '~/env'
-import { higherArrowNftAbi } from '~/utils/abi'
 import { AlchemyResponse, OwnedNft } from '~/utils/alchemyResponse'
 // import { useAccount, useWaitForTransactionReceipt, useSwitchChain } from 'wagmi'
-import { base } from 'wagmi/chains'
 
 type NFTMetadata = {
     name: string

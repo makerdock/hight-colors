@@ -3,17 +3,20 @@ import BlurIn from './magicui/blur-in'
 import Particles from './magicui/particles'
 import AnimatedGradientText from './magicui/animated-gradient-text'
 import classNames from 'classnames'
+import useColorStore from '~/stores/useColorStore'
 
 const LoadingSidebar = () => {
+    const { primaryColor } = useColorStore()
     return (
         <div
-            className='relative w-full h-[50dvh] flex items-center justify-center px-6 overflow-hidden'
+            className='relative w-full h-[50dvh] md:h-full flex items-center justify-center px-6 overflow-hidden'
         >
             <Particles
-                className="absolute inset-0 h-[50dvh] w-[100vh]"
-                quantity={100}
+                className="absolute inset-0 h-[50dvh] md:h-full w-[100vh]"
+                quantity={200}
                 ease={80}
-                color={"#000"}
+                size={5}
+                color={primaryColor}
                 refresh
             />
             {/* <h3 className='text-3xl'>Loading...</h3> */}
