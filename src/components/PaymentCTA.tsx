@@ -44,6 +44,12 @@ export function PaymentCta() {
         abi: higherArrowNftAbi,
         functionName: 'totalSupply',
     })
+    // const mintPrice = await readContract(wagmiCoreConfig as any, ) as bigint
+    // const { data: mintPrice = BigInt(0) } = useReadContract({
+    //     address: nftContractAddress as any,
+    //     abi: higherArrowNftAbi,
+    //     functionName: 'ethMintPrice',
+    // })
     console.log("🚀 ~ PaymentCta ~ totalSupply:", totalSupply)
 
     const currentChainId = useChainId();
@@ -112,21 +118,32 @@ export function PaymentCta() {
 
     const mintArrowWithHigher = async () => {
         try {
-            const session = await createSession(glideConfig, {
+
+            const mintPrice = await readContract(wagmiCoreConfig as any, {
+                address: nftContractAddress as any,
+                abi: higherArrowNftAbi,
+                functionName: 'mintPrice',
+            }) as bigint
+
+            // const ethMintPriceInEth = formatEther(mintPrice)
+
+            const sessionOptions = {
                 account: account.address,
 
                 // Optional. Setting this restricts the user to only
                 // pay with the specified currency.
-                paymentCurrency: currencies.higher.on(base),
-                preferGaslessPayment: true,
+                paymentCurrency: currencies.higher.on(chains.base),
 
                 chainId: chains.base.id,
                 address: env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS as any,
                 abi: higherArrowNftAbi,
-                functionName: "mint",
-                args: [account.address, 999999907200n],
-                value: 999999907200n,
-            });
+                functionName: "mintFor",
+                args: [account.address, primaryColor, isBGMode, invertMode],
+                value: mintPrice as bigint,
+            }
+            console.log("🚀 ~ mintArrowWithHigher ~ sessionOptions:", sessionOptions)
+
+            const session = await createSession(glideConfig, sessionOptions);
 
             const transactionHash = await executeSession(glideConfig, {
                 session,
