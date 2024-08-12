@@ -20,8 +20,8 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
 
   const { arrowColor, backgroundColor } = getArrowColors({
     primaryColor,
-    bgMode: true,
-    invertMode: false
+    bgMode: isBGMode,
+    invertMode: invertMode
   });
 
   console.log("🚀 ~ arrowColor, backgroundColor:", arrowColor, backgroundColor)
