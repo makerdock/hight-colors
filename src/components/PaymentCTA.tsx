@@ -416,16 +416,16 @@ export function PaymentCta() {
                         color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
                         borderWidth={2}
                     >
-                        <span>Mint</span>
+                        <span>Mint for $1.00</span>
                     </ShineBorder>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem
                         onClick={mintArrowWithHigher}
-                    >Pay with 150 $HIGHER</DropdownMenuItem>
+                    >150 $HIGHER</DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={mintArrow}
-                    >Pay with ✧ 350</DropdownMenuItem>
+                    >✧ 350 (0.00035 ETH)</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {/* {renderBalanceMessage()} */}
