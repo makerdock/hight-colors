@@ -5,6 +5,7 @@ import FarcasterIcon from './icons/FarcasterIcon'
 import { listItem } from './SuccessSidebar'
 import { Button } from './ui/button'
 import { toast } from './ui/use-toast'
+import { env } from "~/env"
 
 const ShareOptions = (props: { name: string, image: string }) => {
     const tokenId = props.name.split('Higher Arrow #')[1]
@@ -49,7 +50,7 @@ const ShareOptions = (props: { name: string, image: string }) => {
         // Assuming mintedNftMetadata.image is a base64 encoded image
         const link = document.createElement('a')
         link.href = props?.image || ''
-        link.download = `${props?.name || ''}.png`
+        link.download = props?.image
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -59,7 +60,7 @@ const ShareOptions = (props: { name: string, image: string }) => {
         })
     }
 
-    const openSeaUrl = `https://opensea.io/assets/base/0xf00a42891f5a156ab6b866184d49ea032b6f792c/${tokenId}`;
+    const openSeaUrl = `https://opensea.io/assets/base/${env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS}/${tokenId}`;
 
     return (
         <motion.div variants={listItem} className="flex space-x-2 items-center">
