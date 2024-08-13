@@ -18,7 +18,7 @@ const ArrowDetailsSidebar = (props: { token: Nft, ownerAddress: string }) => {
     const { primaryColor, isBGMode, invertMode } = extractValuesFromAttributes(token.raw.metadata?.attributes || []);
     const name = token?.name
 
-    const secondaryColor = invertMode ? 'black' : 'white'
+    const secondaryColor = invertMode ? '#000000' : '#ffffff'
 
     return (
         <div
