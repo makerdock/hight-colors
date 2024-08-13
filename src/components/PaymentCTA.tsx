@@ -441,7 +441,6 @@ export function PaymentCta() {
             </div>
             {/* {renderBalanceMessage()} */}
             <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4">
-                {/* {parseInt(totalSupply as any)}/1000 Mints */}
                 <CountdownTimer targetDate={'2024-08-14T16:30:00Z'} />
             </span>
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
