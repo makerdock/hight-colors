@@ -56,7 +56,7 @@ const ArrowDetailsSidebar = (props: { token: Nft, ownerAddress: string }) => {
                     </div>
                 </motion.div>
                 <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
-                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Back Color</div>
+                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Sec. Color</div>
                     <div className='p-1 px-2 flex items-center justify-start space-x-1  w-24'>
                         <span style={{ background: secondaryColor }} className='aspect-square rounded-sm h-4 w-4 border border-gray-400 ' />
                         <span className='uppercase text-sm'>{secondaryColor}</span>
