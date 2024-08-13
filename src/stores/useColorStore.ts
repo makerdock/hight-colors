@@ -49,7 +49,7 @@ interface ColorState {
 export const useColorStore = create<ColorState>((set, get) => ({
     primaryColor: undefined,
     secondaryColor: undefined,
-    sidebarMode: "success",
+    sidebarMode: "mint",
     mintError: undefined,
     isGradientMode: false,
     isBGMode: false,
