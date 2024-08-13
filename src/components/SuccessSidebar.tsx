@@ -87,10 +87,10 @@ const SuccessSidebar = () => {
                         <span className='uppercase text-sm'>{secondaryColor}</span>
                     </div>
                 </motion.div>
-                <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
+                {/* <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
                     <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Inverted</div>
                     <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
-                </motion.div>
+                </motion.div> */}
                 <motion.h3 variants={listItem} className="!mt-8 text-sm uppercase tracking-widest font-bold text-gray-500">Share your high</motion.h3>
 
                 {mintedNftMetadata?.name && mintedNftMetadata?.image && <ShareOptions name={mintedNftMetadata?.name} image={mintedNftMetadata?.image} />}
