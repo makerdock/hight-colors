@@ -56,7 +56,7 @@ const GetUserNFTsWithMetadata = () => {
             </div>
             <div className='flex justify-center space-x-2'>
                 {nfts?.map(({ tokenId, image }) => (
-                    <Link href={`/arrow/${tokenId}`}>
+                    <Link href={`/arrow/${tokenId}`} key={tokenId}>
                         <motion.div
                             key={tokenId}
                             initial={{ y: 60 }}
