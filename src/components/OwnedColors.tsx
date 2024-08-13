@@ -191,10 +191,8 @@ const OwnedColors: React.FC<OwnedColorsProps> = ({ }) => {
                     </p>
                 </div>
                 {renderColorPickers()}
-
-                <a href='' target="_blank"
+                <a href='https://www.basecolors.com/' target="_blank"
                     rel="noopener noreferrer" className="text-gray-500 text-xs underline"> Get more Base Colors</a>
-
                 <div className="flex justify-start items-center mt-4">
                     <h2 className="text-lg font-semibold text-black mr-2 flex-grow">Invert</h2>
                     <Toggle isOn={isBGMode} onToggle={toggleInvert} />
