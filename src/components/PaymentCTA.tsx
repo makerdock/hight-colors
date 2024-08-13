@@ -282,6 +282,9 @@ export function PaymentCta() {
     // }
 
 
+    // const mintArrow = () => {
+    //     console.log([primaryColor, isBGMode, invertMode])
+    // }
     const mintArrow = async () => {
         const currChainId = account.chainId;
         if (currChainId !== base.id) {

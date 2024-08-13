@@ -18,13 +18,13 @@ export const extractValuesFromAttributes = (attributes: Array<{ trait_type: stri
 
     attributes.forEach(attr => {
         switch (attr.trait_type) {
-            case "Color":
+            case "First Color":
                 result.primaryColor = attr.value;
                 break;
-            case "Background Mode":
-                result.isBGMode = attr.value === "Gradient";
-                break;
             case "Invert Mode":
+                result.isBGMode = attr.value === "True";
+                break;
+            case "Second Color":
                 result.invertMode = attr.value === "True";
                 break;
         }
