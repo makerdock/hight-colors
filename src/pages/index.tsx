@@ -18,7 +18,6 @@ const Home: NextPage = () => {
     isGradientMode, setIsGradientMode, invertMode, setInvertMode,
     sidebarMode, setSidebarMode
   } = useColorStore()
-  console.log("🚀 ~ sidebarMode:", sidebarMode)
   // const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
   // const [isColorMinterOpen, setIsColorMinterOpen] = useState(false)
   const { address } = useAccount();

@@ -18,7 +18,6 @@ import { base } from '@wagmi/core/chains';
 import { env } from '~/env';
 
 const projectId = env.NEXT_PUBLIC_WALLET_CONNECT_KEY;
-console.log("🚀 ~ projectId:", projectId)
 
 
 // const { wallets } = getDefaultWallets({

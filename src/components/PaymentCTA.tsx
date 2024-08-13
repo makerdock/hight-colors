@@ -51,7 +51,6 @@ export function PaymentCta() {
     //     abi: higherArrowNftAbi,
     //     functionName: 'ethMintPrice',
     // })
-    console.log("🚀 ~ PaymentCta ~ totalSupply:", totalSupply)
 
     const currentChainId = useChainId();
     const { switchChainAsync } = useSwitchChain();
@@ -94,7 +93,6 @@ export function PaymentCta() {
         })
         const tokenId: number = (event.args as any)?.tokenId
 
-        console.log("🚀 ~ getTokenUriFromHash: ~ tokenId:", tokenId)
 
         // Get the token URI
         const tokenURI = await readContract(wagmiCoreConfig as any, {
@@ -104,7 +102,6 @@ export function PaymentCta() {
             args: [tokenId],
         })
 
-        console.log("🚀 ~ getTokenUriFromHash: ~ tokenURI:", tokenURI)
 
         if (!tokenURI) {
             throw new Error('Failed to fetch token URI')
@@ -112,7 +109,6 @@ export function PaymentCta() {
 
         // Fetch the JSON from the URI
         const tokenData = await fetch(tokenURI as string).then(response => response.json())
-        console.log("🚀 ~ getTokenUriFromHash: ~ tokenData:", tokenData)
 
         return { tokenId, tokenURI, tokenData }
     }
@@ -142,7 +138,6 @@ export function PaymentCta() {
                 args: [account.address, primaryColor, isBGMode, invertMode],
                 value: mintPrice as bigint,
             }
-            console.log("🚀 ~ mintArrowWithHigher ~ sessionOptions:", sessionOptions)
 
             const session = await createSession(glideConfig, sessionOptions);
 
@@ -223,7 +218,6 @@ export function PaymentCta() {
 
 
 
-    //         console.log("allowance", allowance)
 
 
     //         if (allowance < mintPrice) {
@@ -306,14 +300,12 @@ export function PaymentCta() {
         }) as bigint
 
         const ethMintPriceInEth = formatEther(mintPrice)
-        console.log("ETH Mint price:", ethMintPriceInEth)
 
         const balance = await getBalance(wagmiCoreConfig as any, {
             address: account.address as any,
         })
 
         const balanceInEth = formatEther(balance.value)
-        console.log("ETH balance:", balanceInEth)
 
 
         if (parseFloat(balanceInEth) < parseFloat(ethMintPriceInEth)) {
@@ -330,7 +322,6 @@ export function PaymentCta() {
         setSidebarMode("loading");
         try {
 
-            console.log("🚀 ~ mintArrow: ~ contractAddress:", contractAddress)
             const { request } = await simulateContract(wagmiCoreConfig as any, {
                 address: contractAddress as any,
                 functionName: 'mint',
@@ -339,7 +330,6 @@ export function PaymentCta() {
                 value: mintPrice,
             }).catch((error) => {
                 const shortMessage = error.shortMessage.split('reason:')[1]
-                console.log("🚀 ~ mintArrow ~ shortMessage:", shortMessage)
                 if (shortMessage) {
                     const publicError = new Error(shortMessage);
                     (publicError as any).showToUser = true
@@ -348,7 +338,6 @@ export function PaymentCta() {
                 throw error
             })
             const hash = await writeContractAsync(request)
-            console.log("🚀 ~ mintArrow ~ hash:", hash)
 
             if (!hash) {
                 throw new Error('Transaction failed');

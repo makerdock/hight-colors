@@ -32,7 +32,6 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
         return () => clearInterval(timerRef.current);
     }, [targetDate]);
 
-    console.log("🚀 ~ timeLeft:", timeLeft);
 
     return (
         <div className="font-mono text-lg font-bold">

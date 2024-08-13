@@ -12,7 +12,6 @@ import { getArrowColors } from '~/utils/getArrowColors'
 
 const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }> = ({ token, farcasterAccount, ownerAddress }) => {
 
-  console.log("🚀 ~ token:", ownerAddress)
   if (!token) {
     return <div></div>
   }
@@ -24,7 +23,6 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
     invertMode: invertMode
   });
 
-  console.log("🚀 ~ arrowColor, backgroundColor:", arrowColor, backgroundColor)
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
