@@ -7,7 +7,7 @@ import { Button } from './ui/button'
 import { toast } from './ui/use-toast'
 
 const ShareOptions = (props: { name: string, image: string }) => {
-    const tokenId = props.name.split('Color Arrow #')[1]
+    const tokenId = props.name.split('Higher Arrow #')[1]
 
     const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out:`
     const shareUrl = `https://highercolors.com/a/${tokenId}` // Replace with actual URL
@@ -59,7 +59,7 @@ const ShareOptions = (props: { name: string, image: string }) => {
         })
     }
 
-    const openSeaUrl = "https://opensea.io";
+    const openSeaUrl = `https://opensea.io/assets/base/0xf00a42891f5a156ab6b866184d49ea032b6f792c/${tokenId}`;
 
     return (
         <motion.div variants={listItem} className="flex space-x-2 items-center">
