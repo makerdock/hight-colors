@@ -9,7 +9,7 @@ import { toast } from './ui/use-toast'
 const ShareOptions = (props: { name: string, image: string }) => {
     const tokenId = props.name.split('Higher Arrow #')[1]
 
-    const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out:`
+    const shareMessage = `I just minted ${props?.name || ''}! Check it out:`
     const shareUrl = `https://highercolors.com/a/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
