@@ -48,7 +48,7 @@ const GetUserNFTsWithMetadata = () => {
     if (!nfts.length) return null;
 
     return (
-        <div className='fixed bottom-0 left-0 pb-4 w-full hidden sm:block '>
+        <div className='fixed bottom-0 left-0 w-full hidden sm:block pointer-events-none'>
             <div className='flex justify-center space-x-2 translate-y-16 opacity-100 group-hover:opacity-0 peer-hover:opacity-0'>
                 <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 hover:underline">
                     Your Arrow NFTs
@@ -61,9 +61,9 @@ const GetUserNFTsWithMetadata = () => {
                             key={tokenId}
                             initial={{ y: 60 }}
                             animate={{ y: 60 }}
-                            whileHover={{ y: 0 }}
+                            whileHover={{ y: -20, scale: 1.1 }}
                             transition={{ duration: 0.3 }}
-                            className="cursor-pointer relative group"
+                            className="cursor-pointer relative group pointer-events-auto"
                         >
                             <span className="uppercase text-sm tracking-widest font-semibold text-slate-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                 Arrow #{tokenId}
