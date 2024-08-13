@@ -305,7 +305,6 @@ export function PaymentCta() {
         const ethMintPriceInEth = formatEther(mintPrice)
         console.log("ETH Mint price:", ethMintPriceInEth)
 
-        // // Fetch ETH balance
         const balance = await getBalance(wagmiCoreConfig as any, {
             address: account.address as any,
         })
@@ -335,6 +334,15 @@ export function PaymentCta() {
                 abi: higherArrowNftAbi,
                 args: [primaryColor, isBGMode, invertMode],
                 value: mintPrice,
+            }).catch((error) => {
+                const shortMessage = error.shortMessage.split('reason:')[1]
+                console.log("🚀 ~ mintArrow ~ shortMessage:", shortMessage)
+                if (shortMessage) {
+                    const publicError = new Error(shortMessage);
+                    (publicError as any).showToUser = true
+                    throw publicError;
+                }
+                throw error
             })
             const hash = await writeContractAsync(request)
             console.log("🚀 ~ mintArrow ~ hash:", hash)
@@ -350,14 +358,21 @@ export function PaymentCta() {
             setSidebarMode("success");
         } catch (error) {
             console.error(error);
-            // set({ sidebarMode: "mint" });
+
             setSidebarMode("mint");
 
-            toast({
-                variant: "destructive",
-                title: 'Something went wrong.',
-                description: 'Could not mint NFT, please try again later.'
-            });
+            const showToUser = (error as any).showToUser;
+            const errorMessage = (error as any).message;
+            toast(
+                showToUser ? {
+                    variant: "destructive",
+                    title: errorMessage,
+                } : {
+                    variant: "destructive",
+                    title: 'Something went wrong.',
+                    description: 'Could not mint NFT, please try again later.'
+                }
+            );
         }
     }
 
