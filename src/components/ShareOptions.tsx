@@ -47,16 +47,29 @@ const ShareOptions = (props: { name: string, image: string }) => {
     }
 
     const handleDownload = () => {
-        // Assuming mintedNftMetadata.image is a base64 encoded image
+        if (!props?.image) {
+            toast({
+                title: 'Download failed',
+                description: 'The image URL is missing.',
+                variant: 'destructive',
+            })
+            return
+        }
+
         const link = document.createElement('a')
-        link.href = props?.image || ''
-        link.download = props?.image
+        link.href = props.image
+
+        // Use props.name for the file name, fallback to a default if not provided
+        const fileName = props.name ? `${props.name}.png` : 'nft_image.png'
+        link.download = fileName
+
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+
         toast({
             title: 'Download started',
-            description: 'Your NFT image is being downloaded.',
+            description: `Your NFT image "${fileName}" is being downloaded.`,
         })
     }
 
@@ -82,9 +95,9 @@ const ShareOptions = (props: { name: string, image: string }) => {
             <Button size="icon" variant={"outline"} onClick={handleCopyShare}>
                 <MdCopyAll className="h-6 w-6" />
             </Button>
-            <Button size="icon" variant={"outline"} onClick={handleDownload}>
+            {/* <Button size="icon" variant={"outline"} onClick={handleDownload}>
                 <MdOutlineFileDownload className="h-6 w-6" />
-            </Button>
+            </Button> */}
         </motion.div>
     )
 }
