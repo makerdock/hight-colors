@@ -49,7 +49,7 @@ const Home: NextPage<{ token?: Nft, farcasterAccount?: any, ownerAddress?: any }
         <meta property="fc:frame:image:aspect_ratio" content="1:1" />
         <meta property="fc:frame:button:1" content="Check this out" />
         <meta property="fc:frame:button:1:action" content="link" />
-        <meta property="fc:frame:button:1:target" content={`https://highercolors.com/arrow/${token.tokenId}`} />
+        <meta property="fc:frame:button:1:target" content={`https://highercolors.com/a/${token.tokenId}`} />
         <meta property="fc:frame:button:2" content="Mint" />
         <meta property="fc:frame:button:2:action" content="link" />
         <meta property="fc:frame:button:2:target" content="https://highercolors.com/" />

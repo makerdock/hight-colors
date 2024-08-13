@@ -10,7 +10,7 @@ const ShareOptions = (props: { name: string, image: string }) => {
     const tokenId = props.name.split('Color Arrow #')[1]
 
     const shareMessage = `I just minted ${props?.name || ''} on Higher! Check it out:`
-    const shareUrl = `https://highercolors.com/arrow/${tokenId}` // Replace with actual URL
+    const shareUrl = `https://highercolors.com/a/${tokenId}` // Replace with actual URL
 
     const handleFarcasterShare = () => {
         const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareMessage)}&embeds[]=${encodeURIComponent(shareUrl)}`;
