@@ -21,20 +21,22 @@ const Nav = () => {
     return (
         <>
             <nav className="flex justify-center py-6 fixed top-0 left-0 w-full z-30">
-                <div className={classnames("backdrop-blur-md bg-white/30 rounded-full shadow-lg", "invisible sm:visible")}>
-                    {!address && (
-                        <button onClick={openConnectModal} className={buttonClasses}>
-                            Connect Wallet
-                        </button>
-                    )}
-                    {!!address && (
+                {!!address && (
+                    <div className={classnames("backdrop-blur-md bg-white/30 rounded-full shadow-lg", "invisible sm:visible")}>
                         <button onClick={openAccountModal} className={classnames(buttonClasses)}>
                             {walletFormat(address)}
                         </button>
-                    )}
+                    </div>
+                )}
 
+                {!address && (
+                    <div className={classnames("backdrop-blur-md bg-white/30 rounded-full shadow-lg")}>
+                        <button onClick={openConnectModal} className={buttonClasses}>
+                            Connect Wallet
+                        </button>
+                    </div>
+                )}
 
-                </div>
             </nav>
             {!!address && (
                 <Button variant={"ghost"} onClick={openAccountModal} className={classnames("md:invisible visible absolute top-2 right-2 ml-auto z-50 shadow-lg border border-gray-200 text-gray-600 rounded-full cursor-pointer")}>
