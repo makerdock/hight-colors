@@ -25,7 +25,7 @@ export const extractValuesFromAttributes = (attributes: Array<{ trait_type: stri
                 result.isBGMode = attr.value === "True";
                 break;
             case "Second Color":
-                result.invertMode = attr.value === "True";
+                result.invertMode = attr.value === "black";
                 break;
         }
     });
@@ -87,10 +87,12 @@ const SuccessSidebar = () => {
                         <span className='uppercase text-sm'>{secondaryColor}</span>
                     </div>
                 </motion.div>
-                {/* <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
-                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Inverted</div>
-                    <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
-                </motion.div> */}
+                <motion.div variants={listItem} className='rounded-md w-full border border-gray-200 text-xs flex items-stretch h-7'>
+                    <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Invert Mode</div>
+                    <div className='p-1 px-2 flex items-center justify-start space-x-1  w-24'>
+                        <span className='uppercase text-sm'>{isBGMode ? 'true' : 'false'}</span>
+                    </div>
+                </motion.div>
                 <motion.h3 variants={listItem} className="!mt-8 text-sm uppercase tracking-widest font-bold text-gray-500">Share your high</motion.h3>
 
                 {mintedNftMetadata?.name && mintedNftMetadata?.image && <ShareOptions name={mintedNftMetadata?.name} image={mintedNftMetadata?.image} />}
