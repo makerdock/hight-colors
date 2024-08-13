@@ -66,6 +66,8 @@ const ArrowDetailsSidebar = (props: { token: Nft, ownerAddress: string }) => {
                     <div className='p-1 px-2 flex-1 bg-gray-100 text-gray-500 uppercase tracking-wider font-bold'>Inverted</div>
                     <div className='p-1 px-2 uppercase text-sm w-24'>{String(isBGMode)}</div>
                 </motion.div>
+
+                {token?.name && token?.image.originalUrl && <ShareOptions name={token?.name} image={token?.image.originalUrl} />}
             </motion.div>
             <Link className='w-full' href="/">
                 <ShineBorder
