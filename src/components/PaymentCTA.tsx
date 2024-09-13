@@ -22,6 +22,7 @@ import { higherArrowNftAbi } from "~/utils/abi"
 import { glideConfig } from "~/utils/glideConfig"
 import { toast } from "./ui/use-toast"
 import CountdownTimer from "./CountdownTimer"
+import { Button } from "./ui/button"
 
 const nftContractAddress = env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
 const higherTokenAddress = env.NEXT_PUBLIC_ALT_PAYMENT_CONTRACT_ADDRESS;
@@ -368,6 +369,8 @@ export function PaymentCta() {
         }
     }
 
+    const openSeaUrl = `https://opensea.io/collection/higher-arrows`
+
     const higherBalance = async (ownerAddress: string | undefined) => {
         try {
             const balance = await readContract(wagmiCoreConfig as any, {
@@ -394,6 +397,7 @@ export function PaymentCta() {
         return balanceBigInt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
+
     // const renderBalanceMessage = () => {
     //     if (balance === null) {
     //         return;
@@ -417,21 +421,29 @@ export function PaymentCta() {
 
     return (
         <>
-            <div
-                onClick={mintArrow}
+            <div className="flex flex-col items-center justify-center"
+
             >
-                <ShineBorder
-                    className="text-center text-sm font-bold mb-2 uppercase w-full tracking-widest shadow-lg cursor-pointer flex justify-center items-center space-x-1"
-                    color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-                    borderWidth={2}
-                >
-                    <span>Mint for $0.99 </span>
-                </ShineBorder>
+                <p className="text-xs text-gray-400">
+                    Buy Higher Arrows
+                </p>
+                <p className="text-xs mb-2 text-gray-400">
+                    Minted in 36 Hours
+                </p>
+                <button className="w-44 outline outline-gray-400 rounded-2xl">
+                    <a
+                        href={openSeaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img className="w-40 p-2 h-auto object-contain" src="/OpenSea-Full-Logo.svg" alt="OpenSea logo" />
+                    </a>
+                </button>
             </div>
             {/* {renderBalanceMessage()} */}
-            <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4">
+            {/* <span className=" text-slate-600 text-center align-middle items-center text-base font-bold mt-4">
                 <CountdownTimer targetDate={'2024-08-16T16:30:00Z'} />
-            </span>
+            </span> */}
             {/* {!!mintError?.length && <div className="text-red-500 text-sm font-medium mt-1">{mintError}</div>} */}
         </>
 
