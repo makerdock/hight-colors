@@ -11,7 +11,6 @@ import LoadingSidebar from '~/components/LoadingSidebar'
 import Nav from '~/components/Nav'
 import OwnedColors from '~/components/OwnedColors'
 import SuccessSidebar from '~/components/SuccessSidebar'
-import WelcomeSidebar from '~/components/WelcomeSidebar'
 import useColorStore from '~/stores/useColorStore'
 
 const Home: NextPage = () => {
@@ -138,7 +137,7 @@ const Home: NextPage = () => {
                   animate={{ opacity: "100%" }}
                   className='w-full h-full md:max-h-max max-h-full overflow-hidden'
                 >
-                  <WelcomeSidebar />
+                  <OwnedColors onColorSelect={handleColorSelect} />
                 </motion.div>
               }
               {sidebarMode === "loading" &&
