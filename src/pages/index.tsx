@@ -69,6 +69,10 @@ const Home: NextPage = () => {
     setIsGradientMode(false)
   }
 
+  const primary = '#5CA904'; // Green
+  const secondary = '#FFFFFF'; // White
+  const bg = true
+
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <Head>
@@ -94,15 +98,14 @@ const Home: NextPage = () => {
 
       </Head>
       {!!address && <Nav />}
-
       <main className="flex-grow flex flex-col lg:flex-row justify-center items-center px-0 relative w-full max-w-4xl mx-auto flex-1 min-h-[100dvh] md:min-h-full">
-        <div>
+        {/* <div>
           {!address && <GradientCanvas colors={['#a960ee', '#ff333d', '#90e0ff', '#ffcb57']} />}
           {!address &&
             <Nav />
           }
-        </div>
-        {!!address && <div
+        </div> */}
+        <div
           className={classNames('flex flex-col md:flex-row flex-1 md:flex-auto items-stretch border border-slate-200 overflow-hidden shadow-lg w-full bg-white relative',
           )}
         >
@@ -116,6 +119,12 @@ const Home: NextPage = () => {
               invertMode={invertMode}
               secondaryColor={secondaryColor}
               bgMode={isBGMode}
+            />}
+            {!address && <Arrow
+              primaryColor={primary}
+              invertMode={invertMode}
+              secondaryColor={secondaryColor}
+              bgMode={bg}
             />}
             {/* {!address && (
             <p className='text-white text-xs mt-4 text-center'>Connect Wallet to Change Color and Mint</p>
@@ -164,7 +173,7 @@ const Home: NextPage = () => {
               }
             </AnimatePresence>
           </motion.div>
-        </div>}
+        </div>
         {!!address && <GetUserNFTs />
         }
       </main>
